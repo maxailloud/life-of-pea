@@ -13,8 +13,9 @@ public class MenuListener extends ControllerAdapter {
 	@Override
 	public boolean buttonUp(Controller controller, int buttonIndex) {
 		if(buttonIndex == 7){
-			menu.start();
 			Controllers.removeListener(this);
+			menu.start();
+			return false;
 		}
 		return true;
 	}

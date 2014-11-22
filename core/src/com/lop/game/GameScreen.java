@@ -3,6 +3,7 @@ package com.lop.game;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -41,7 +42,7 @@ public class GameScreen implements Screen {
 		
 		createPlayer(1);
 		createPlayer(2);
-		generatePlatform(0);
+		initialGeneration();
 		// First we create a body definition
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.KinematicBody;
@@ -130,8 +131,22 @@ public class GameScreen implements Screen {
 		
 		rectangle.dispose();
 	}
-	public void generatePlatform(float height){
-		createPlatform(2, 2, 3, 1);
+	public void generatePlatform(float height, float x){
+		float platformHeight = 1;
+		float width = MathUtils.random(2f, 4f);
+		createPlatform(x, height, width, platformHeight);
+	}
+	public void initialGeneration(){
+		float random = 0f;
+		float x = MathUtils.random() * cam.viewportWidth * 0.1f;
+		for(int i = 3; i < cam.viewportWidth; i++){
+			if(MathUtils.random() < 0.8f + random ){
+				generatePlatform(i, x + MathUtils.random(0.15f, 0.5f) * ((float)(MathUtils.random(0, 1) * 2 - 1))* cam.viewportWidth);
+				random = 0f;
+			}
+			else if(0.5f + random < 1f)
+				random+= 0.1f;
+		}
 	}
 	public void destroyPlatforms(){
 		
