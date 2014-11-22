@@ -49,6 +49,7 @@ public class GameScreen implements Screen {
 		body.createFixture(fixtureDef);
 
 		ground = new Ground(game.spritesAtlas);
+		body.setUserData(ground);
 		
 		edge.dispose();
 	}
@@ -83,12 +84,6 @@ public class GameScreen implements Screen {
 		Array<Body> bodies = new Array<Body>();
 		world.getBodies(bodies);
 		for(Body body : bodies){
-			if(body.getUserData() instanceof Player){
-				
-				Player player = (Player) body.getUserData();
-				
-				
-			}
 			if(body.getUserData() instanceof Renderable){
 				((Renderable)body.getUserData()).render(game.batch);
 			}
@@ -117,7 +112,6 @@ public class GameScreen implements Screen {
 		body.createFixture(fixtureDef);
 		
 		edge.dispose();
-		ground.render(game.batch);
 	}
 	public void generatePlatform(float height){
 		

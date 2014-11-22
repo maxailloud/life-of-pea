@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
-public class Ground {
+public class Ground implements Renderable{
 	private Sprite[] groundSprites = new Sprite[21];
 
     public Ground(TextureAtlas spriteAtlas) {
