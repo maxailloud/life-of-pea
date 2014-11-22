@@ -7,9 +7,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class MyGame extends Game {
 	public TextureAtlas spritesAtlas;
@@ -18,7 +18,6 @@ public class MyGame extends Game {
 	private FPSLogger fpsLog;
 	private InputMultiplexer inputs;
 	SpriteBatch batch;
-	Texture img;
 
 	@Override
 	public void create () {
@@ -26,14 +25,9 @@ public class MyGame extends Game {
 		fpsLog = new FPSLogger();
 		inputs = new InputMultiplexer();
 		spritesAtlas =  new TextureAtlas(Gdx.files.internal("spritesheet.atlas"));
-		menu = new GameScreen(this);
+		menu = new MainMenuScreen(new ScreenViewport(), this);
 		setScreen(menu);
 		batch = new SpriteBatch();
-		
-		
-
-		
-
 	}
 	@Override
 	public void render() {
