@@ -11,5 +11,6 @@ public class DesktopLauncher {
 		config.foregroundFPS = 60;
 		config.width = 864;
 		config.height= 640;
+		config.title = "Life Of Pea";
 		}
 }
