@@ -43,7 +43,10 @@ public class Platform implements Renderable {
 			shape.getVertex(2, vertex2);
 			
 			Vector2 bounds = vertex2.sub(vertex0);
-			batch.draw(left, body.getPosition().x, body.getPosition().y - bounds.y, width, bounds.y * 2);
+			batch.draw(left, body.getPosition().x, body.getPosition().y - bounds.y, bounds.y, bounds.y * 2);
+			for(int i = 0; i <= Math.ceil(((-bounds.x - bounds.y * 2f) / bounds.y)); i++)
+			batch.draw(mid, body.getPosition().x + bounds.y * (i+2), body.getPosition().y - bounds.y, -bounds.y, bounds.y * 2);
+			batch.draw(right, -bounds.x + body.getPosition().x - bounds.y, body.getPosition().y - bounds.y, bounds.y, bounds.y * 2);
 		}
 	}
 

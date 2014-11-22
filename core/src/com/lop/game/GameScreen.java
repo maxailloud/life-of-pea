@@ -85,7 +85,7 @@ public class GameScreen extends Stage implements Screen {
 		cam.translate(0, cam.viewportHeight / 2);
 		cam.update();
 
-		for(int i = 0; i < Controllers.getControllers().size ; i++){
+		for(int i = 0; i < Controllers.getControllers().size; i++){
 			createPlayer(i);
 		}
 		initialGeneration();
@@ -231,34 +231,33 @@ public class GameScreen extends Stage implements Screen {
 		createPlatform(x, height, width, platformHeight);
 	}
 	public Platform nextPlatform(Platform platform){
-		float angle = MathUtils.random(-70f, -40f) * (float)(((MathUtils.random(0, 1)+ 1) / 2)) + 90f;
+		Vector2 position = platform.getBody().getPosition().add(new Vector2(platform.width /2, 1));
+		Vector2 newPos;
+		do
+		{
+			newPos = randomNewPos(position);
+		if(newPos.x < -cam.viewportWidth / 2  * 0.4f)
+			newPos.x = -cam.viewportWidth / 2 * 0.4f;
+		if(newPos.x > cam.viewportWidth / 2 * 0.4f)
+			newPos.x = cam.viewportWidth / 2 * 0.4f;
+		}while(newPos.x < -cam.viewportWidth / 2  * 0.4f || newPos.x > cam.viewportWidth / 2 * 0.4f);
+		return createPlatform(newPos.x, newPos.y, MathUtils.random(3f, 6f), 1);
+	}
+	public Vector2 randomNewPos(Vector2 position)
+	{
+		float angle = MathUtils.random(-70f, -40f) * (float)(((MathUtils.random(0, 1)+ 1) -1)) + 90f;
 		
 		Vector2 translation = new Vector2(Vector2.X).rotate(angle).scl((float) (MathUtils.random(4f, 6f) * (1f + (Math.sin((90f - angle) * MathUtils.degRad) + 1f) / 5f)));
 		
-		Vector2 position = platform.getBody().getPosition().add(new Vector2(platform.width /2, 1));
+		
 		
 		Vector2 newPos = position.add(translation).sub(new Vector2(3, 1));
-		
-		if(newPos.x < -cam.viewportWidth / 2 )
-			newPos.x = -cam.viewportWidth / 2;
-		if(newPos.x > cam.viewportWidth / 2 )
-			newPos.x = cam.viewportWidth / 2;
-		return createPlatform(newPos.x, newPos.y, MathUtils.random(3f, 6f), 1);
+		return newPos;
 	}
 	public void initialGeneration(){
 		
 		lastPlatform = createPlatform(-cam.viewportWidth / 4 - 1, 3, 2, 1);
-		for(int i = 0; i < 20; i++){
-			lastPlatform = nextPlatform(lastPlatform);
-
-		}
-		lastPlatform = createPlatform(cam.viewportWidth / 4 - 1, 3, 2, 1);
-		for(int i = 0; i < 20; i++){
-			lastPlatform = nextPlatform(lastPlatform);
-
-		}
-		lastPlatform = createPlatform(cam.viewportWidth / 4 - 1, 3, 2, 1);
-		for(int i = 0; i < 20; i++){
+		for(int i = 0; i < 10; i++){
 			lastPlatform = nextPlatform(lastPlatform);
 
 		}
@@ -313,7 +312,7 @@ public class GameScreen extends Stage implements Screen {
 	}
 
 	public void displayWinOverlay() {
-		displaySuspendedOverlay("Joueur " + (winner.rank + 1) + " a gagnÃ©");
+		displaySuspendedOverlay("Joueur " + (winner.rank + 1) + " a gagné");
 	}
 
 	public void displaySuspendedOverlay(String message) {

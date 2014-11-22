@@ -75,11 +75,9 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 		}
 
 		if (null != bonus) {
-			Fixture fix = player.getBody().getFixtureList().get(0);
-			fix.setDensity(fix.getDensity() + 0.5f);
-			player.scale(1.1f);
 			
-			bonus.toBeDestroy = true;
+			bonus.bonus(player);
+			
 		}
 		
 		if(a.getUserData() instanceof Player){
@@ -87,7 +85,6 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 			if(contact.isTouching() && checkJumpCollision(a, b))
 				player.incrementJumpCollisions();
 			
-		
 		}
 		if(b.getUserData() instanceof Player){
 			player = (Player)b.getUserData();
@@ -122,7 +119,6 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 		Body a = contact.getFixtureA().getBody();
 		Body b = contact.getFixtureB().getBody();
 		
-		Player player;
 		if(a.getUserData() instanceof Player){
 			if(!(b.getUserData() instanceof Player)){
 			 //check if contact points are moving downward

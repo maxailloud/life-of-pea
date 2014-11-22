@@ -23,7 +23,25 @@ public class Player implements Renderable{
 		this.game = game;
 		this.rank = rank;
 		this.jumpCollisions = 1;
-		String path = rank == 1 ? "alienGreen_round" : "alienBlue_round";
+		
+		String path = "alien";
+		switch(rank){
+		case 1: 
+			path += "Green_round";
+			break;
+		case 2: 
+			path += "Blue_round";
+			break;
+		case 3: 
+			path += "Pink_round";
+			break;
+		case 4: 
+			path += "Yellow_round";
+			break;
+		default :
+			path += "Yellow_round";
+			break;
+		}
 		AtlasRegion tex = game.spritesAtlas.findRegion(path);
 		sprite = new Sprite(tex);
 		
