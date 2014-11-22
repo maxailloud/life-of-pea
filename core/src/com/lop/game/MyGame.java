@@ -15,7 +15,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 public class MyGame extends Game {
 	public TextureAtlas spritesAtlas;
 	private AssetManager manager;
-	private Screen menu;
+	private Screen menuScreen;
+	public Screen gameScreen;
 	private FPSLogger fpsLog;
 	private InputMultiplexer inputs;
 	SpriteBatch batch;
@@ -30,8 +31,9 @@ public class MyGame extends Game {
 		fpsLog = new FPSLogger();
 		inputs = new InputMultiplexer();
 		spritesAtlas =  new TextureAtlas(Gdx.files.internal("spritesheet.atlas"));
-		menu = new MainMenuScreen(new ScreenViewport(), this);
-		setScreen(menu);
+		menuScreen = new MainMenuScreen(new ScreenViewport(), this);
+		gameScreen = new GameScreen(this);
+		setScreen(menuScreen);
 		batch = new SpriteBatch();
 		pauseBatch = new SpriteBatch();
 		gameSound = Gdx.audio.newSound(Gdx.files.internal("SmashRunner.mp3"));

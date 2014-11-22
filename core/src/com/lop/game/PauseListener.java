@@ -4,15 +4,20 @@ import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerAdapter;
 
 public class PauseListener extends ControllerAdapter {
-	private GameScreen game;
+	private GameScreen gameScreen;
 
 	public PauseListener(GameScreen game) {
-		this.game = game;
+		this.gameScreen = game;
 	}
 	@Override
 	public boolean buttonUp(Controller controller, int buttonIndex) {
 		if(buttonIndex == 7){
-			game.pause();
+			if(gameScreen.playerWin) {
+				gameScreen.restart();
+			}
+			else {
+				gameScreen.pause();
+			}
 		}
 		return true;
 	}

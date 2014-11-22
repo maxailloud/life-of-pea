@@ -44,6 +44,7 @@ public class MainMenuScreen extends Stage implements Screen{
 		button.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				game.clickSound.play();
+				game.gameSound.stop();
 				game.gameSound.loop();
 				start();
 			}
@@ -94,11 +95,11 @@ public class MainMenuScreen extends Stage implements Screen{
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	public void start() {
 		Controllers.removeListener(menuListener);
+		this.getActors().removeValue(button, true);
 		game.setScreen(new GameScreen(game));
 	}
 
