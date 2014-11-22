@@ -5,7 +5,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -29,11 +28,14 @@ public class GameScreen implements Screen {
 
 	private Ground ground;
 
-	private Sprite pauseSprite;
+	private Sprite suspendedOverlaySprite;
 	private boolean gamePaused = false;
 
 	private Array<Player> players;
-	
+
+	private boolean playerWin = false;
+	private Player winner;
+
 	Box2DDebugRenderer debugRenderer;
 	
 	public GameScreen(MyGame game) {
@@ -76,7 +78,7 @@ public class GameScreen implements Screen {
 		
 		edge.dispose();
 
-		pauseSprite = game.spritesAtlas.createSprite("green_panel");
+		suspendedOverlaySprite = game.spritesAtlas.createSprite("green_panel");
 
 		debugRenderer = new Box2DDebugRenderer();
 	}
@@ -120,7 +122,11 @@ public class GameScreen implements Screen {
 				}
             }
         }
-		if (!gamePaused) {
+
+		if (playerWin) {
+			displayWinOverlay();
+		}
+		else if (!gamePaused) {
 			world.step(delta, 6, 2);
 			verticalScrolling();
 			checkDie();
@@ -144,13 +150,33 @@ public class GameScreen implements Screen {
 		}
 		cam.update();
 	}
+
+	public Array<Player> getAlivePlayers() {
+		Array<Player> alivePlayers = new Array<Player>();
+
+		for(Player player : players){
+			if (!player.isDead()) {
+				alivePlayers.add(player);
+			}
+		}
+
+		return alivePlayers;
+	}
+
 	public void checkDie(){
 		for(Player player : players){
 			Vector2 pos = player.getBody().getPosition();
 			if(pos.y < cam.position.y - cam.viewportWidth * 0.7f && !player.isDead())
 			{
 				die(player);
+				players.removeValue(player, true);
 			}
+		}
+
+		Array<Player> alivePlayers = getAlivePlayers();
+		if (1 == alivePlayers.size) {
+			playerWin = true;
+			winner = players.first();
 		}
 	}
 	public void die(Player player){
@@ -252,14 +278,21 @@ public class GameScreen implements Screen {
 	}
 
 	public void displayPauseOverlay() {
+		displaySuspendedOverlay("Pause");
+	}
+
+	public void displayWinOverlay() {
+		displaySuspendedOverlay("Joueur " + winner.rank + " a gagné");
+	}
+
+	public void displaySuspendedOverlay(String message) {
 		game.batch.end();
 		game.pauseBatch.begin();
-		pauseSprite.setPosition((Gdx.graphics.getWidth() / 2) - (pauseSprite.getWidth() / 2), (Gdx.graphics.getHeight() / 2) - (pauseSprite.getHeight() / 2));
-		pauseSprite.setScale(2f);
-		pauseSprite.draw(game.pauseBatch);
-		String fontText = "Pause";
+		suspendedOverlaySprite.setPosition((Gdx.graphics.getWidth() / 2) - (suspendedOverlaySprite.getWidth() / 2), (Gdx.graphics.getHeight() / 2) - (suspendedOverlaySprite.getHeight() / 2));
+		suspendedOverlaySprite.setScale(2f);
+		suspendedOverlaySprite.draw(game.pauseBatch);
 		BitmapFont font = new BitmapFont();
-		font.draw(game.pauseBatch, fontText, Gdx.graphics.getWidth() / 2 - font.getBounds(fontText).width/2, Gdx.graphics.getHeight() / 2 + font.getBounds(fontText).height/2);
+		font.draw(game.pauseBatch, message, Gdx.graphics.getWidth() / 2 - font.getBounds(message).width/2, Gdx.graphics.getHeight() / 2 + font.getBounds(message).height/2);
 		game.pauseBatch.end();
 		game.batch.begin();
 	}

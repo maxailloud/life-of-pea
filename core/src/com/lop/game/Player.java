@@ -10,7 +10,7 @@ import com.badlogic.gdx.physics.box2d.Shape;
 public class Player implements Renderable{
 	private MyGame game;
 	private Sprite sprite;
-	private int rank;
+	public int rank;
 	
 	private Body body;
 	
