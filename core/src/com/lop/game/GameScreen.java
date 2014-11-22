@@ -38,6 +38,7 @@ public class GameScreen implements Screen {
 
 	Box2DDebugRenderer debugRenderer;
 	
+	Platform lastPlatform;
 	public GameScreen(MyGame game) {
 		this.game = game;
 		players = new Array<Player>();
@@ -46,7 +47,7 @@ public class GameScreen implements Screen {
 		PauseListener pauseListener = new PauseListener(this);
 		Controllers.addListener(pauseListener);
 
-		world = new World(new Vector2(0, -30), true);
+		world = new World(new Vector2(0, -90), true);
 		world.setContactListener(controllerListener);
 		cam = new OrthographicCamera(30f * 1.35f, 30f);
 		cam.translate(0, cam.viewportHeight / 2);
@@ -110,10 +111,16 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
+		
         game.batch.setProjectionMatrix(cam.combined);
         Array<Body> bodies = new Array<Body>();
         world.getBodies(bodies);
         for(Body body : bodies){
+        	Vector2 pos = body.getWorldCenter();
+        	if(pos.y < cam.position.y - cam.viewportWidth * 0.7f && body.getUserData() instanceof Platform){
+        		world.destroyBody(body);
+        		lastPlatform = nextPlatform(lastPlatform);
+        	}
             if(body.getUserData() instanceof Renderable){
 				if (body.getUserData() instanceof Destroyable && ((Destroyable)body.getUserData()).toBeDestroy) {
 					world.destroyBody(body);
@@ -217,22 +224,33 @@ public class GameScreen implements Screen {
 		createPlatform(x, height, width, platformHeight);
 	}
 	public Platform nextPlatform(Platform platform){
-		float angle = MathUtils.random(10f, 80f) * 2f;
-		//get pos
-		//dist entre 100 et dist max
+		float angle = MathUtils.random(-70f, -40f) * (float)(((MathUtils.random(0, 1)+ 1) / 2)) + 90f;
+		
 		Vector2 translation = new Vector2(Vector2.X).rotate(angle).scl((float) (MathUtils.random(4f, 6f) * (1f + (Math.sin((90f - angle) * MathUtils.degRad) + 1f) / 5f)));
 		
 		Vector2 position = platform.getBody().getPosition().add(new Vector2(platform.width /2, 1));
 		
 		Vector2 newPos = position.add(translation).sub(new Vector2(3, 1));
 		
-		if(newPos.x < -cam.viewportWidth / 2)
-			newPos.x = 0;
+		if(newPos.x < -cam.viewportWidth / 2 )
+			newPos.x = -cam.viewportWidth / 2;
+		if(newPos.x > cam.viewportWidth / 2 )
+			newPos.x = cam.viewportWidth / 2;
 		return createPlatform(newPos.x, newPos.y, MathUtils.random(3f, 6f), 1);
 	}
 	public void initialGeneration(){
 		
-		Platform lastPlatform = createPlatform(-cam.viewportWidth / 4 - 1, 3, 2, 1);
+		lastPlatform = createPlatform(-cam.viewportWidth / 4 - 1, 3, 2, 1);
+		for(int i = 0; i < 20; i++){
+			lastPlatform = nextPlatform(lastPlatform);
+
+		}
+		lastPlatform = createPlatform(cam.viewportWidth / 4 - 1, 3, 2, 1);
+		for(int i = 0; i < 20; i++){
+			lastPlatform = nextPlatform(lastPlatform);
+
+		}
+		lastPlatform = createPlatform(cam.viewportWidth / 4 - 1, 3, 2, 1);
 		for(int i = 0; i < 20; i++){
 			lastPlatform = nextPlatform(lastPlatform);
 
