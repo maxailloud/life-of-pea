@@ -21,7 +21,7 @@ public class Player implements Renderable{
 		this.body = body;
 		this.game = game;
 		this.rank = rank;
-		this.jumpCollisions = 2;
+		this.jumpCollisions = 1;
 		String path = rank == 1 ? "alienGreen_round" : "alienBlue_round";
 		AtlasRegion tex = game.spritesAtlas.findRegion(path);
 		sprite = new Sprite(tex);
@@ -35,10 +35,10 @@ public class Player implements Renderable{
 		return body;
 	}
 	public void incrementJumpCollisions(){
-		jumpCollisions++;
+		jumpCollisions = 1;
 	}
 	public void decrementJumpCollisions(){
-		jumpCollisions--;
+		jumpCollisions = 0;
 	}
 	public int getJumpCollisions() {
 		return jumpCollisions;

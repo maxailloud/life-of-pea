@@ -208,8 +208,7 @@ public class GameScreen extends Stage implements Screen {
 
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = rectangle;
-		fixtureDef.friction = 12.4f;
-		
+		fixtureDef.friction = 0.5f;
 		body.createFixture(fixtureDef);
 		Platform platform = new Platform(body, game);
 		body.setUserData(platform);
@@ -228,7 +227,7 @@ public class GameScreen extends Stage implements Screen {
 		float angle = MathUtils.random(10f, 80f) * 2f;
 		//get pos
 		//dist entre 100 et dist max
-		Vector2 translation = new Vector2(Vector2.X).rotate(angle).scl(MathUtils.random(2f, 6f) * (1f + Math.abs(angle - 90f) / 90f));
+		Vector2 translation = new Vector2(Vector2.X).rotate(angle).scl((float) (MathUtils.random(4f, 6f) * (1f + (Math.sin((90f - angle) * MathUtils.degRad) + 1f) / 5f)));
 		
 		Vector2 position = platform.getBody().getPosition().add(new Vector2(platform.width /2, 1));
 		
@@ -260,28 +259,35 @@ public class GameScreen extends Stage implements Screen {
 	}
 
 	public void createBonus(Platform platform) {
-		BodyDef bonusBodyDef = new BodyDef();
-		Vector2 platformPosition = platform.getBody().getPosition();
-
-		bonusBodyDef.position.set(platformPosition.x + platform.width / 2 - 0.5f, platformPosition.y + 1.5f);
-		bonusBodyDef.type = BodyType.KinematicBody;
-
-		Body bonusBody = world.createBody(bonusBodyDef);
-
-		PolygonShape rectangle = new PolygonShape();
-		rectangle.set(new float[]{0, 0,
-			1, 0,
-			1, 1,
-			0, 1
-		});
-
-		FixtureDef fixtureDef = new FixtureDef();
-		fixtureDef.shape = rectangle;
-		fixtureDef.friction = 12.4f;
-
-		bonusBody.createFixture(fixtureDef);
-
-		bonusBody.setUserData(new Bonus(2, game, bonusBody));
+		if(MathUtils.random() <= 0.3f){
+			BodyDef bonusBodyDef = new BodyDef();
+			Vector2 platformPosition = platform.getBody().getPosition();
+	
+			bonusBodyDef.position.set(platformPosition.x + platform.width / 2 - 0.5f, platformPosition.y + 1.5f);
+			bonusBodyDef.type = BodyType.KinematicBody;
+	
+			Body bonusBody = world.createBody(bonusBodyDef);
+	
+			PolygonShape rectangle = new PolygonShape();
+			rectangle.set(new float[]{0, 0,
+				1, 0,
+				1, 1,
+				0, 1
+			});
+	
+			FixtureDef fixtureDef = new FixtureDef();
+			fixtureDef.isSensor = true;
+			fixtureDef.shape = rectangle;
+			fixtureDef.friction = 12.4f;
+	
+			bonusBody.createFixture(fixtureDef);
+	
+			int type = 2;
+			if(MathUtils.random() <= 0.3f)
+				type = 1;
+			bonusBody.setUserData(new Bonus(type, game, bonusBody));
+		
+		}
 	}
 
 	public void displayPauseOverlay() {
@@ -289,7 +295,7 @@ public class GameScreen extends Stage implements Screen {
 	}
 
 	public void displayWinOverlay() {
-		displaySuspendedOverlay("Joueur " + winner.rank + " a gagnÃ©");
+		displaySuspendedOverlay("Joueur " + (winner.rank + 1) + " a gagné");
 	}
 
 	public void displaySuspendedOverlay(String message) {

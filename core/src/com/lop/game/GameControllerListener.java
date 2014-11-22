@@ -18,15 +18,26 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 	@Override
 	public boolean axisMoved(Controller controller, int axisIndex, float value) {
 		int controllerIndex = Controllers.getControllers().indexOf(controller, true);
-		if(controllerIndex < players.size() && axisIndex == 1 && Math.abs(value) >= 0.25f)
+		if(controllerIndex < players.size() && axisIndex == 1)
 		{
-			Player player = players.get(controllerIndex);
-			if(!player.isDead()){
-				Body body = player.getBody();
-				body.applyLinearImpulse(value * SPEED * 5, 0, body.getWorldCenter().x, body.getWorldCenter().y, true);
-				if(Math.abs(body.getLinearVelocity().x) > SPEED)
-					body.setLinearVelocity(Math.signum(body.getLinearVelocity().x) * SPEED, body.getLinearVelocity().y);
-				return true;
+			if(Math.abs(value) >= 0.25f){
+				Player player = players.get(controllerIndex);
+				if(!player.isDead()){
+					Body body = player.getBody();
+					body.applyLinearImpulse(value * SPEED * 5, 0, body.getWorldCenter().x, body.getWorldCenter().y, true);
+					if(Math.abs(body.getLinearVelocity().x) > SPEED)
+						body.setLinearVelocity(Math.signum(body.getLinearVelocity().x) * SPEED, body.getLinearVelocity().y);
+					return true;
+				}
+			}
+			else
+			{
+				Player player = players.get(controllerIndex);
+				if(!player.isDead() && player.getJumpCollisions() == 1){
+					Body body = player.getBody();
+					body.setLinearVelocity(0f, 0f);
+					return true;
+				}
 			}
 		}
 		return false;
