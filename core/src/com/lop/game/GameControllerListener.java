@@ -1,20 +1,16 @@
 package com.lop.game;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerAdapter;
 import com.badlogic.gdx.controllers.Controllers;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactImpulse;
-import com.badlogic.gdx.physics.box2d.ContactListener;
-import com.badlogic.gdx.physics.box2d.Manifold;
+import com.badlogic.gdx.physics.box2d.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameControllerListener extends ControllerAdapter implements ContactListener{
-	private List<Player> players; 
-	
+	private List<Player> players;
+
 	public final float SPEED = 10.0f;
 	public GameControllerListener() {
 		players = new ArrayList<Player>();
@@ -61,25 +57,29 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 		
 		if(a.getUserData() instanceof Player){
 			Player player = (Player)a.getUserData();
-			if(contact.isTouching() && checkJumpCollision(a, b, contact))
+			if(contact.isTouching() && checkJumpCollision(a, b))
 				player.incrementJumpCollisions();
-			System.out.println(player.getJumpCollisions());
 		}
 		if(b.getUserData() instanceof Player){
 			Player player = (Player)b.getUserData();
-			if(contact.isTouching() && checkJumpCollision(b, a, contact))
+			if(contact.isTouching() && checkJumpCollision(b, a))
 				player.incrementJumpCollisions();
-			System.out.println(player.getJumpCollisions());
 		}
 
-		if(a.getUserData() instanceof Bonus || b.getUserData() instanceof Bonus) {
-			System.out.println("bonus");
+		Bonus bonus = null;
+
+		if(a.getUserData() instanceof Bonus) {
+			bonus = (Bonus)a.getUserData();
+		} else if (b.getUserData() instanceof Bonus) {
+			bonus = (Bonus)b.getUserData();
+		}
+
+		if (null != bonus) {
+			bonus.toBeDestroy = true;
 		}
 	}
-	public boolean checkJumpCollision(Body playerBody, Body b, Contact contact){
-		if(playerBody.getPosition().y >= b.getPosition().y + b.getFixtureList().get(0).getShape().getRadius() *2)
-			return true;
-		return false;
+	public boolean checkJumpCollision(Body playerBody, Body b){
+		return playerBody.getPosition().y >= b.getPosition().y + b.getFixtureList().get(0).getShape().getRadius() * 2;
 	}
 	@Override
 	public void endContact(Contact contact) {
@@ -88,15 +88,13 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 		
 		if(a.getUserData() instanceof Player){
 			Player player = (Player)a.getUserData();
-			if(checkJumpCollision(a, b, contact))
+			if(checkJumpCollision(a, b))
 				player.decrementJumpCollisions();
-			System.out.println(player.getJumpCollisions());
 		}
 		if(b.getUserData() instanceof Player){
 			Player player = (Player)b.getUserData();
-			if(checkJumpCollision(b, a, contact))
+			if(checkJumpCollision(b, a))
 				player.decrementJumpCollisions();
-			System.out.println(player.getJumpCollisions());
 		}
 	}
 	@Override

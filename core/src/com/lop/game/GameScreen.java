@@ -113,9 +113,12 @@ public class GameScreen implements Screen {
         world.getBodies(bodies);
         for(Body body : bodies){
             if(body.getUserData() instanceof Renderable){
-                ((Renderable)body.getUserData()).render(game.batch);
+				if (body.getUserData() instanceof Destroyable && ((Destroyable)body.getUserData()).toBeDestroy) {
+					world.destroyBody(body);
+				} else {
+					((Renderable)body.getUserData()).render(game.batch);
+				}
             }
-
         }
 		if (!gamePaused) {
 			world.step(delta, 6, 2);
@@ -124,7 +127,6 @@ public class GameScreen implements Screen {
 		else {
 			displayPauseOverlay();
 		}
-
 		//debugRenderer.render(world, cam.combined);
 	}
 	public void verticalScrolling(){
@@ -246,7 +248,7 @@ public class GameScreen implements Screen {
 
 		bonusBody.createFixture(fixtureDef);
 
-		bonusBody.setUserData(new Bonus(2, game, platform, bonusBody));
+		bonusBody.setUserData(new Bonus(2, game, bonusBody));
 	}
 
 	public void displayPauseOverlay() {
