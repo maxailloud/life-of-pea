@@ -86,15 +86,37 @@ public class GameScreen implements Screen {
 			if(body.getUserData() instanceof Player){
 				
 				Player player = (Player) body.getUserData();
-				for(Fixture fix : body.getFixtureList()){
-					Shape shape = fix.getShape();
-					game.batch.draw(player.getSprite(), body.getPosition().x, body.getPosition().y, shape.getRadius() * 2, shape.getRadius() * 2);
-				}
-
+				
+				
 			}
-
+			if(body.getUserData() instanceof Renderable){
+				((Renderable)body.getUserData()).render(game.batch);
+			}
+			
 		}
 		world.step(delta, 6, 2);
+	}
+	public void createPlatform(float x, float y, float width, float height){
+		// First we create a body definition
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.type = BodyType.KinematicBody;
+		bodyDef.position.set(0, 0);
+
+		Body body = world.createBody(bodyDef);
+		PolygonShape edge = new PolygonShape();
+		edge.set(new float[]{x, y,
+			x, y + height,
+			x + width, y + height,
+			x + width
+		});
+
+		FixtureDef fixtureDef = new FixtureDef();
+		fixtureDef.shape = edge;
+		fixtureDef.friction = 12.4f;
+		
+		body.createFixture(fixtureDef);
+		
+		edge.dispose();
 		ground.render(game.batch);
 	}
 	public void generatePlatform(float height){

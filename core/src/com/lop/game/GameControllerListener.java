@@ -41,7 +41,6 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 			Player player = players.get(controllerIndex);
 			Body body = player.getBody();
 			
-			System.out.println(player.getJumpCollisions());
 			if(player.getJumpCollisions() > 0)
 				body.applyLinearImpulse(0, 100f, body.getWorldCenter().x, body.getWorldCenter().y, true);
 			return true;
