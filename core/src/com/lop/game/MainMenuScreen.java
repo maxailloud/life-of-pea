@@ -20,6 +20,7 @@ public class MainMenuScreen extends Stage implements Screen{
     public BitmapFont font;
     public Skin skin;
 	public Sound clickSound;
+	private MenuListener menuListener;
 
 	public MainMenuScreen(Viewport viewport, MyGame myGame) {
 		super(viewport);
@@ -45,13 +46,14 @@ public class MainMenuScreen extends Stage implements Screen{
 		button.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				clickSound.play();
-				game.setScreen(new GameScreen(game));
+				start();
 			}
 		});
 
 		this.addActor(button);
 
-		Controllers.addListener(new MenuListener(this));
+		menuListener = new MenuListener(this);
+		Controllers.addListener(menuListener);
 	}
 
 	@Override
@@ -97,6 +99,7 @@ public class MainMenuScreen extends Stage implements Screen{
 	}
 
 	public void start() {
+		Controllers.removeListener(menuListener);
 		game.setScreen(new GameScreen(game));
 	}
 
