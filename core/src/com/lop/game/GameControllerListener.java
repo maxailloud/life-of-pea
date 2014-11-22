@@ -11,8 +11,9 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.Shape;
 
 public class GameControllerListener extends ControllerAdapter implements ContactListener{
 	private List<Player> players;
@@ -36,7 +37,7 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 					return true;
 				}
 			}
-			
+
 		}
 		return false;
 	}
@@ -48,9 +49,11 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 			Player player = players.get(controllerIndex);
 			if(!player.isDead()){
 				Body body = player.getBody();
-				
-				if(player.getJumpCollisions() > 0)
+
+				if(player.getJumpCollisions() > 0){
+					body.setLinearDamping(1f);
 					body.applyLinearImpulse(controller.getAxis(1) * SPEED * 20, 520f, body.getWorldCenter().x, body.getWorldCenter().y, true);
+				}
 			}
 			return true;
 		}
@@ -63,7 +66,7 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 	public void beginContact(Contact contact) {
 		Body a = contact.getFixtureA().getBody();
 		Body b = contact.getFixtureB().getBody();
-		
+
 		Bonus bonus = null;
 		Player player = null;
 		if(a.getUserData() instanceof Bonus && b.getUserData() instanceof Player) {
@@ -75,16 +78,16 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 		}
 
 		if (null != bonus) {
-			
+
 			bonus.bonus(player);
-			
+
 		}
-		
+		player = null;
 		if(a.getUserData() instanceof Player){
 			player = (Player)a.getUserData();
 			if(contact.isTouching() && checkJumpCollision(a, b))
 				player.incrementJumpCollisions();
-			
+
 		}
 		if(b.getUserData() instanceof Player){
 			player = (Player)b.getUserData();
@@ -99,7 +102,7 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 	public void endContact(Contact contact) {
 		Body a = contact.getFixtureA().getBody();
 		Body b = contact.getFixtureB().getBody();
-		
+
 		if(a.getUserData() instanceof Player){
 			Player player = (Player)a.getUserData();
 			if(checkJumpCollision(a, b))
@@ -115,40 +118,51 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 	public void preSolve(Contact contact, Manifold oldManifold) {
 		Body a = contact.getFixtureA().getBody();
 		Body b = contact.getFixtureB().getBody();
-		
+
 		if(a.getUserData() instanceof Player){
-			if(!(b.getUserData() instanceof Player)){
-			 //check if contact points are moving downward
-		      for (int i = 0; i < contact.getWorldManifold().getNumberOfContactPoints(); i++) {
-		          Vector2 pointVel =
-		             a.getLinearVelocityFromWorldPoint(contact.getWorldManifold().getPoints()[i]);
-		          if ( pointVel.y <= 0 )
-		              return;//point is moving down, leave contact solid and exit
-		      }
-		  
-		      //no points are moving downward, contact should not be solid
-		      contact.setEnabled(false);
+			Shape shape = contact.getFixtureA().getShape();
+
+			if((b.getUserData() instanceof Platform)){
+				PolygonShape pShape = (PolygonShape)(contact.getFixtureB().getShape());
+				Vector2 vertex0 = new Vector2();
+				pShape.getVertex(2, vertex0);
+				//check if contact points are moving downward
+				for (int i = 0; i < contact.getWorldManifold().getNumberOfContactPoints(); i++) {
+					Vector2 pointVel =
+							a.getLinearVelocityFromWorldPoint(contact.getWorldManifold().getPoints()[i]);
+					
+					if ( pointVel.y < 0  || a.getPosition().y >= b.getPosition().y + vertex0.y)
+						return;//point is moving down, leave contact solid and exit
+				}
+
+				//no points are moving downward, contact should not be solid
+				contact.setEnabled(false);
 			}
-		
+
 		}
 		if(b.getUserData() instanceof Player){
-			if(!(a.getUserData() instanceof Player)){
+			Shape shape = contact.getFixtureB().getShape();
+
+			if((a.getUserData() instanceof Platform)){
+				PolygonShape pShape = (PolygonShape)(contact.getFixtureA().getShape());
+				Vector2 vertex0 = new Vector2();
+				pShape.getVertex(2, vertex0);
 				//check if contact points are moving downward
-			      for (int i = 0; i < contact.getWorldManifold().getNumberOfContactPoints(); i++) {
-			          Vector2 pointVel =
-			             b.getLinearVelocityFromWorldPoint(contact.getWorldManifold().getPoints()[i]);
-			          if ( pointVel.y <= 0 )
-			              return;//point is moving down, leave contact solid and exit
-			      }
-			  
-			      //no points are moving downward, contact should not be solid
-			      contact.setEnabled(false);
+				for (int i = 0; i < contact.getWorldManifold().getNumberOfContactPoints(); i++) {
+					Vector2 pointVel =
+							b.getLinearVelocityFromWorldPoint(contact.getWorldManifold().getPoints()[i]);
+					
+					if ( pointVel.y < 0  || b.getPosition().y >= a.getPosition().y + vertex0.y)
+						return;//point is moving down, leave contact solid and exit
+				}
+
+				//no points are moving downward, contact should not be solid
+				contact.setEnabled(false);
 			}
 		}
 	}
 	@Override
 	public void postSolve(Contact contact, ContactImpulse impulse) {
-		// TODO Auto-generated method stub
-		
+
 	}
 }
