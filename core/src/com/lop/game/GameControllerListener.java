@@ -7,8 +7,12 @@ import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerAdapter;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Manifold;
 
-public class GameControllerListener extends ControllerAdapter{
+public class GameControllerListener extends ControllerAdapter implements ContactListener{
 	private List<Player> players; 
 	
 	public final float SPEED = 10.0f;
@@ -37,12 +41,65 @@ public class GameControllerListener extends ControllerAdapter{
 			Player player = players.get(controllerIndex);
 			Body body = player.getBody();
 			
-			body.applyLinearImpulse(0, 100f, body.getWorldCenter().x, body.getWorldCenter().y, true);
+			System.out.println(player.getJumpCollisions());
+			if(player.getJumpCollisions() > 0)
+				body.applyLinearImpulse(0, 100f, body.getWorldCenter().x, body.getWorldCenter().y, true);
 			return true;
 		}
 		return super.buttonUp(controller, buttonIndex);
 	}
 	public void addPlayer(Player player){
 		players.add(player);
+	}
+	@Override
+	public void beginContact(Contact contact) {
+		Body a = contact.getFixtureA().getBody();
+		Body b = contact.getFixtureB().getBody();
+		
+		if(a.getUserData() instanceof Player){
+			Player player = (Player)a.getUserData();
+			if(contact.isTouching() && checkJumpCollision(a, b, contact))
+				player.incrementJumpCollisions();
+			System.out.println(player.getJumpCollisions());
+		}
+		if(b.getUserData() instanceof Player){
+			Player player = (Player)b.getUserData();
+			if(contact.isTouching() && checkJumpCollision(b, a, contact))
+				player.incrementJumpCollisions();
+			System.out.println(player.getJumpCollisions());
+		}
+	}
+	public boolean checkJumpCollision(Body playerBody, Body b, Contact contact){
+		if(playerBody.getPosition().y >= b.getPosition().y + b.getFixtureList().get(0).getShape().getRadius() *2)
+			return true;
+		return false;
+	}
+	@Override
+	public void endContact(Contact contact) {
+		Body a = contact.getFixtureA().getBody();
+		Body b = contact.getFixtureB().getBody();
+		
+		if(a.getUserData() instanceof Player){
+			Player player = (Player)a.getUserData();
+			if(checkJumpCollision(a, b, contact))
+				player.decrementJumpCollisions();
+			System.out.println(player.getJumpCollisions());
+		}
+		if(b.getUserData() instanceof Player){
+			Player player = (Player)b.getUserData();
+			if(checkJumpCollision(b, a, contact))
+				player.decrementJumpCollisions();
+			System.out.println(player.getJumpCollisions());
+		}
+	}
+	@Override
+	public void preSolve(Contact contact, Manifold oldManifold) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void postSolve(Contact contact, ContactImpulse impulse) {
+		// TODO Auto-generated method stub
+		
 	}
 }

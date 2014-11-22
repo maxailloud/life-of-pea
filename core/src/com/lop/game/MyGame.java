@@ -31,7 +31,7 @@ public class MyGame extends Game {
 	}
 	@Override
 	public void render() {
-		fpsLog.log();
+		//fpsLog.log();
 		Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();

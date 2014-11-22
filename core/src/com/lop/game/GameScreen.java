@@ -30,7 +30,7 @@ public class GameScreen implements Screen {
 		Controllers.addListener(controllerListener);
 		
 		world = new World(new Vector2(0, -10), true);
-		
+		world.setContactListener(controllerListener);
 		cam = new OrthographicCamera(30f * 1.35f, 30f);
 		cam.translate(0, cam.viewportHeight / 2);
 		cam.update();
@@ -59,7 +59,7 @@ public class GameScreen implements Screen {
 		// First we create a body definition
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
-		bodyDef.position.set(0, 0);
+		bodyDef.position.set(5 * rank - 5, 0);
 
 		Body body = world.createBody(bodyDef);
 		Player player = new Player(rank, game, body);
