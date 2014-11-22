@@ -25,11 +25,13 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 		if(controllerIndex < players.size() && axisIndex == 1 && Math.abs(value) >= 0.25f)
 		{
 			Player player = players.get(controllerIndex);
-			Body body = player.getBody();
-			body.applyLinearImpulse(value * SPEED * 5, 0, body.getWorldCenter().x, body.getWorldCenter().y, true);
-			if(Math.abs(body.getLinearVelocity().x) > SPEED)
-				body.setLinearVelocity(Math.signum(body.getLinearVelocity().x) * SPEED, body.getLinearVelocity().y);
-			return true;
+			if(!player.isDead()){
+				Body body = player.getBody();
+				body.applyLinearImpulse(value * SPEED * 5, 0, body.getWorldCenter().x, body.getWorldCenter().y, true);
+				if(Math.abs(body.getLinearVelocity().x) > SPEED)
+					body.setLinearVelocity(Math.signum(body.getLinearVelocity().x) * SPEED, body.getLinearVelocity().y);
+				return true;
+			}
 		}
 		return false;
 	}
@@ -39,10 +41,12 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 		if(controllerIndex < players.size() && buttonIndex == 0)
 		{
 			Player player = players.get(controllerIndex);
-			Body body = player.getBody();
-			
-			if(player.getJumpCollisions() > 0)
-				body.applyLinearImpulse(0, 100f, body.getWorldCenter().x, body.getWorldCenter().y, true);
+			if(!player.isDead()){
+				Body body = player.getBody();
+				
+				if(player.getJumpCollisions() > 0)
+					body.applyLinearImpulse(0, 200f, body.getWorldCenter().x, body.getWorldCenter().y, true);
+			}
 			return true;
 		}
 		return super.buttonUp(controller, buttonIndex);
