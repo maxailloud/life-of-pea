@@ -43,7 +43,7 @@ public class Player implements Renderable{
 	public void render(SpriteBatch batch) {
 		for(Fixture fix : body.getFixtureList()){
 			Shape shape = fix.getShape();
-			game.batch.draw(getSprite(), body.getPosition().x, body.getPosition().y, shape.getRadius() * 2, shape.getRadius() * 2);
+			game.batch.draw(getSprite(), body.getPosition().x - shape.getRadius(), body.getPosition().y - shape.getRadius(), shape.getRadius() * 2, shape.getRadius() * 2);
 		}
 	}
 

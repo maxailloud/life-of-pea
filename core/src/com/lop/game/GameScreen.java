@@ -45,7 +45,7 @@ public class GameScreen implements Screen {
 		// First we create a body definition
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.KinematicBody;
-		bodyDef.position.set(0, 1);
+		bodyDef.position.set(0, 2);
 
 		Body body = world.createBody(bodyDef);
 		EdgeShape edge = new EdgeShape();
@@ -110,8 +110,7 @@ public class GameScreen implements Screen {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.position.set(x, y);
 		bodyDef.type = BodyType.KinematicBody;
-		bodyDef.position.set(3, 3);
-
+		
 		Body body = world.createBody(bodyDef);
 		PolygonShape rectangle = new PolygonShape();
 		rectangle.set(new float[]{0, 0,

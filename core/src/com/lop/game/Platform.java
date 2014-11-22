@@ -1,7 +1,5 @@
 package com.lop.game;
 
-import sun.security.provider.certpath.Vertex;
-
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -34,7 +32,7 @@ public class Platform implements Renderable {
 			
 			Vector2 bounds = vertex2.sub(vertex0);
 			System.out.println(body.getPosition().x + " " + body.getPosition().y);
-			batch.draw(left, body.getPosition().x, body.getPosition().y, -bounds.x, bounds.y * 2);
+			batch.draw(left, body.getPosition().x, body.getPosition().y - bounds.y, -bounds.x, bounds.y * 2);
 		}
 	}
 
