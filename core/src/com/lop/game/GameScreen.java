@@ -37,7 +37,8 @@ public class GameScreen implements Screen {
 		
 		controllerListener = new GameControllerListener();
 		Controllers.addListener(controllerListener);
-		Controllers.addListener(new PauseListener(this));
+		PauseListener pauseListener = new PauseListener(this);
+		Controllers.addListener(pauseListener);
 
 		world = new World(new Vector2(0, -10), true);
 		world.setContactListener(controllerListener);
