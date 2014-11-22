@@ -3,6 +3,7 @@ package com.lop.game;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Fixture;
 
 public class Bonus extends Destroyable implements Renderable {
     private Sprite sprite;
@@ -17,5 +18,22 @@ public class Bonus extends Destroyable implements Renderable {
 
     public void render(SpriteBatch batch) {
         batch.draw(sprite, body.getPosition().x - 0.5f, body.getPosition().y - 0.5f, 2, 2);
+    }
+    public void bonus(Player player){
+    	Fixture fix = player.getBody().getFixtureList().get(0);
+    	switch(type){
+    		case "starBronze":
+		    	
+				fix.setDensity(fix.getDensity() * 2);
+				player.scale(1.01f);
+				break;
+    		case "starSilver":
+		    	fix.setDensity(fix.getDensity() * 10);
+				player.scale(1.01f);
+				break;
+	    
+    	
+    	}
+		toBeDestroy = true;
     }
 }
