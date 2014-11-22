@@ -56,7 +56,7 @@ public class GameScreen implements Screen {
 		initialGeneration();
 		
 		
-		//Création du sol
+		//CrÃ©ation du sol
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.KinematicBody;
 		bodyDef.position.set(0, 2);
