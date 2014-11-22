@@ -2,6 +2,7 @@ package com.lop.game;
 
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerAdapter;
+import com.badlogic.gdx.controllers.Controllers;
 
 public class MenuListener extends ControllerAdapter {
 	private MainMenuScreen menu;
@@ -15,6 +16,7 @@ public class MenuListener extends ControllerAdapter {
 			menu.render = !menu.render;
 			
 			menu.start();
+			Controllers.removeListener(this);
 		}
 		return true;
 	}
