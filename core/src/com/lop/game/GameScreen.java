@@ -8,14 +8,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.EdgeShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 
 public class GameScreen implements Screen {
@@ -31,6 +25,8 @@ public class GameScreen implements Screen {
 
 	private Sprite pauseSprite;
 	private boolean gamePaused = false;
+
+	Box2DDebugRenderer debugRenderer;
 
 	public GameScreen(MyGame game) {
 		this.game = game;
@@ -70,6 +66,8 @@ public class GameScreen implements Screen {
 		edge.dispose();
 
 		pauseSprite = game.spritesAtlas.createSprite("green_panel");
+
+		debugRenderer = new Box2DDebugRenderer();
 	}
 	public void createPlayer(int rank){
 		
@@ -111,17 +109,10 @@ public class GameScreen implements Screen {
 			world.step(delta, 6, 2);
 		}
 		else {
-			game.batch.end();
-			game.pauseBatch.begin();
-			pauseSprite.setPosition((Gdx.graphics.getWidth() / 2) - (pauseSprite.getWidth() / 2), (Gdx.graphics.getHeight() / 2) - (pauseSprite.getHeight() / 2));
-			pauseSprite.setScale(2f);
-			pauseSprite.draw(game.pauseBatch);
-			String fontText = "Pause";
-			BitmapFont font = new BitmapFont();
-			font.draw(game.pauseBatch, fontText, Gdx.graphics.getWidth() / 2 - font.getBounds(fontText).width/2, Gdx.graphics.getHeight() / 2 + font.getBounds(fontText).height/2);
-			game.pauseBatch.end();
-			game.batch.begin();
+			displayPauseOverlay();
 		}
+
+		debugRenderer.render(world, cam.combined);
 	}
 
 	public void createPlatform(float x, float y, float width, float height){
@@ -145,10 +136,14 @@ public class GameScreen implements Screen {
 		fixtureDef.friction = 12.4f;
 		
 		body.createFixture(fixtureDef);
-		body.setUserData(new Platform(body, game));
+		Platform platform = new Platform(body, game);
+		body.setUserData(platform);
 		
 		rectangle.dispose();
+
+		createBonus(platform);
 	}
+
 	public void generatePlatform(float height, float x){
 		float platformHeight = 1;
 		float width = MathUtils.random(2f, 4f);
@@ -168,6 +163,44 @@ public class GameScreen implements Screen {
 	}
 	public void destroyPlatforms(){
 		
+	}
+
+	public void createBonus(Platform platform) {
+		BodyDef bonusBodyDef = new BodyDef();
+		Vector2 platformPosition = platform.getBody().getPosition();
+
+		bonusBodyDef.position.set(platformPosition.x + platform.width / 2 - 0.5f, platformPosition.y + 1.5f);
+		bonusBodyDef.type = BodyType.KinematicBody;
+
+		Body bonusBody = world.createBody(bonusBodyDef);
+
+		PolygonShape rectangle = new PolygonShape();
+		rectangle.set(new float[]{0, 0,
+			1, 0,
+			1, 1,
+			0, 1
+		});
+
+		FixtureDef fixtureDef = new FixtureDef();
+		fixtureDef.shape = rectangle;
+		fixtureDef.friction = 12.4f;
+
+		bonusBody.createFixture(fixtureDef);
+
+		bonusBody.setUserData(new Bonus(2, game, platform, bonusBody));
+	}
+
+	public void displayPauseOverlay() {
+		game.batch.end();
+		game.pauseBatch.begin();
+		pauseSprite.setPosition((Gdx.graphics.getWidth() / 2) - (pauseSprite.getWidth() / 2), (Gdx.graphics.getHeight() / 2) - (pauseSprite.getHeight() / 2));
+		pauseSprite.setScale(2f);
+		pauseSprite.draw(game.pauseBatch);
+		String fontText = "Pause";
+		BitmapFont font = new BitmapFont();
+		font.draw(game.pauseBatch, fontText, Gdx.graphics.getWidth() / 2 - font.getBounds(fontText).width/2, Gdx.graphics.getHeight() / 2 + font.getBounds(fontText).height/2);
+		game.pauseBatch.end();
+		game.batch.begin();
 	}
 
 	@Override

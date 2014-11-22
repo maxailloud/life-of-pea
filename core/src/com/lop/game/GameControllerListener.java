@@ -67,6 +67,10 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 				player.incrementJumpCollisions();
 			System.out.println(player.getJumpCollisions());
 		}
+
+		if(a.getUserData() instanceof Bonus || b.getUserData() instanceof Bonus) {
+			System.out.println("bonus");
+		}
 	}
 	public boolean checkJumpCollision(Body playerBody, Body b, Contact contact){
 		if(playerBody.getPosition().y >= b.getPosition().y + b.getFixtureList().get(0).getShape().getRadius() *2)
