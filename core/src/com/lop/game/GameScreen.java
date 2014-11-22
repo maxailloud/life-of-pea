@@ -4,20 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.EdgeShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 
-public class GameScreen implements Screen {
+public class GameScreen extends Stage implements Screen {
 	private MyGame game;
 
 	private World world;
@@ -40,24 +36,21 @@ public class GameScreen implements Screen {
 	
 	public GameScreen(MyGame game) {
 		this.game = game;
-		players = new Array<Player>();
+
 		controllerListener = new GameControllerListener();
 		Controllers.addListener(controllerListener);
 		PauseListener pauseListener = new PauseListener(this);
+		RestartListener restartListener = new RestartListener(this);
 		Controllers.addListener(pauseListener);
+		Controllers.addListener(restartListener);
+
+		suspendedOverlaySprite = game.spritesAtlas.createSprite("green_panel");
 
 		world = new World(new Vector2(0, -30), true);
 		world.setContactListener(controllerListener);
+
 		cam = new OrthographicCamera(30f * 1.35f, 30f);
-		cam.translate(0, cam.viewportHeight / 2);
-		cam.update();
-		
-		for(int i = 0; i < Controllers.getControllers().size ; i++){
-			createPlayer(i);
-		} 
-		initialGeneration();
-		
-		
+
 		//Création du sol
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.KinematicBody;
@@ -70,17 +63,31 @@ public class GameScreen implements Screen {
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = edge;
 		fixtureDef.friction = 12.4f;
-		
+
 		body.createFixture(fixtureDef);
+
+		edge.dispose();
 
 		ground = new Ground(game.spritesAtlas);
 		body.setUserData(ground);
-		
-		edge.dispose();
-
-		suspendedOverlaySprite = game.spritesAtlas.createSprite("green_panel");
 
 		debugRenderer = new Box2DDebugRenderer();
+
+		init();
+	}
+
+	public void init() {
+		players = new Array<Player>();
+		playerWin = false;
+		winner = null;
+
+		cam.translate(0, cam.viewportHeight / 2);
+		cam.update();
+
+		for(int i = 0; i < Controllers.getControllers().size ; i++){
+			createPlayer(i);
+		}
+		initialGeneration();
 	}
 	public void createPlayer(int rank){
 		
@@ -295,6 +302,10 @@ public class GameScreen implements Screen {
 		font.draw(game.pauseBatch, message, Gdx.graphics.getWidth() / 2 - font.getBounds(message).width/2, Gdx.graphics.getHeight() / 2 + font.getBounds(message).height/2);
 		game.pauseBatch.end();
 		game.batch.begin();
+	}
+
+	public void restart() {
+		game.setScreen(new GameScreen(game));
 	}
 
 	@Override
