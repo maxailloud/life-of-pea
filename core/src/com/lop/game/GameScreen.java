@@ -1,6 +1,7 @@
 package com.lop.game;
 
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -21,51 +22,62 @@ public class GameScreen implements Screen {
 	
 	private OrthographicCamera cam;
 	
-	private Player player1, player2;
+	private GameControllerListener controllerListener;
 	public GameScreen(MyGame game) {
 		this.game = game;
+		
+		controllerListener = new GameControllerListener();
+		Controllers.addListener(controllerListener);
+		
 		world = new World(new Vector2(0, -10), true);
 		
-		cam = new OrthographicCamera(15f * 1.35f, 15f);
+		cam = new OrthographicCamera(30f * 1.35f, 30f);
 		cam.translate(0, cam.viewportHeight / 2);
 		cam.update();
+		
+		createPlayer(1);
+		createPlayer(2);
+		// First we create a body definition
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.type = BodyType.KinematicBody;
+		bodyDef.position.set(0, 0);
+
+		Body body = world.createBody(bodyDef);
+		EdgeShape edge = new EdgeShape();
+		edge.set(-50, 0, 100, 0);
+
+		FixtureDef fixtureDef = new FixtureDef();
+		fixtureDef.shape = edge;
+		fixtureDef.friction = 12.4f;
+		
+		body.createFixture(fixtureDef);
+		
+		edge.dispose();
+	}
+	public void createPlayer(int rank){
+		
 		// First we create a body definition
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
-		bodyDef.position.set(0, 30);
+		bodyDef.position.set(0, 0);
 
 		Body body = world.createBody(bodyDef);
-		body.setUserData(new Player(1, game));
+		Player player = new Player(rank, game, body);
+		controllerListener.addPlayer(player);
+		body.setUserData(player);
 
 		CircleShape circle = new CircleShape();
 		circle.setRadius(1f);
 
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = circle;
-		fixtureDef.density = 0.5f; 
-		fixtureDef.friction = 0.4f;
+		fixtureDef.density = 3.5f; 
+		fixtureDef.friction = 10.4f;
 		fixtureDef.restitution = 0.3f;
 		
-		Fixture fixture = body.createFixture(fixtureDef);
+		body.createFixture(fixtureDef);
 
 		circle.dispose();
-
-		// First we create a body definition
-		bodyDef = new BodyDef();
-		bodyDef.type = BodyType.KinematicBody;
-		bodyDef.position.set(0, 0);
-
-		body = world.createBody(bodyDef);
-		EdgeShape edge = new EdgeShape();
-		edge.set(0, 0, 100, 0);
-
-		fixtureDef = new FixtureDef();
-		fixtureDef.shape = edge;
-		fixtureDef.friction = 0.4f;
-		
-		fixture = body.createFixture(fixtureDef);
-
-		edge.dispose();
 	}
 	@Override
 	public void render(float delta) {
@@ -78,7 +90,7 @@ public class GameScreen implements Screen {
 				Player player = (Player) body.getUserData();
 				for(Fixture fix : body.getFixtureList()){
 					Shape shape = fix.getShape();
-					game.batch.draw(player.getSprite(), body.getPosition().x, body.getPosition().y, shape.getRadius(), shape.getRadius());
+					game.batch.draw(player.getSprite(), body.getPosition().x, body.getPosition().y, shape.getRadius() * 2, shape.getRadius() * 2);
 				}
 				
 			}
