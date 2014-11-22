@@ -18,6 +18,7 @@ public class MyGame extends Game {
 	private FPSLogger fpsLog;
 	private InputMultiplexer inputs;
 	SpriteBatch batch;
+	SpriteBatch pauseBatch;
 
 	@Override
 	public void create () {
@@ -28,6 +29,7 @@ public class MyGame extends Game {
 		menu = new MainMenuScreen(new ScreenViewport(), this);
 		setScreen(menu);
 		batch = new SpriteBatch();
+		pauseBatch = new SpriteBatch();
 	}
 	@Override
 	public void render() {
