@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -20,6 +21,8 @@ public class MyGame extends Game {
 	SpriteBatch batch;
 	SpriteBatch pauseBatch;
 
+	public Sound gameSound;
+
 	@Override
 	public void create () {
 		manager = new AssetManager();
@@ -30,6 +33,7 @@ public class MyGame extends Game {
 		setScreen(menu);
 		batch = new SpriteBatch();
 		pauseBatch = new SpriteBatch();
+		gameSound = Gdx.audio.newSound(Gdx.files.internal("SmashRunner.mp3"));
 	}
 	@Override
 	public void render() {
@@ -40,6 +44,7 @@ public class MyGame extends Game {
 		super.render();
 		batch.end();
 	}
+
 	public InputMultiplexer getInputs() {
 		return inputs;
 	}
