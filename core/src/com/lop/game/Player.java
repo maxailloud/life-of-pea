@@ -19,7 +19,7 @@ public class Player implements Renderable{
 		this.body = body;
 		this.game = game;
 		this.rank = rank;
-		this.jumpCollisions = 1;
+		this.jumpCollisions = 0;
 		String path = rank == 1 ? "alienGreen_round" : "alienBlue_round";
 		AtlasRegion tex = game.spritesAtlas.findRegion(path);
 		sprite = new Sprite(tex);
