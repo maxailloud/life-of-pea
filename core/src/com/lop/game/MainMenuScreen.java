@@ -2,6 +2,7 @@ package com.lop.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -20,6 +21,7 @@ public class MainMenuScreen extends Stage implements Screen{
     public BitmapFont font;
     public Skin skin;
     public TextureAtlas buttonAtlas;
+	public Sound clickSound;
 
 	public MainMenuScreen(Viewport viewport, MyGame myGame) {
 		super(viewport);
@@ -27,8 +29,9 @@ public class MainMenuScreen extends Stage implements Screen{
 		Gdx.input.setInputProcessor(this);
 
 		game = myGame;
-		
 		game.getInputs().clear();
+
+		clickSound = Gdx.audio.newSound(Gdx.files.internal("click.ogg"));
 
 		font = new BitmapFont();
 		font.scale(0.5F);
@@ -44,7 +47,7 @@ public class MainMenuScreen extends Stage implements Screen{
 
 		button.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
-				System.out.print("pouet");
+				clickSound.play();
 				game.setScreen(new GameScreen(game));
 			}
 		});
