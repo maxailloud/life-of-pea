@@ -288,7 +288,7 @@ public class GameScreen implements Screen {
 	}
 
 	public void displayWinOverlay() {
-		displaySuspendedOverlay("Joueur " + winner.rank + " a gagnÃ©");
+		displaySuspendedOverlay("Joueur " + (winner.rank + 1) + " a gagné");
 	}
 
 	public void displaySuspendedOverlay(String message) {

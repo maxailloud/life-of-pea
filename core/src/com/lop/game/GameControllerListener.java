@@ -36,8 +36,6 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 				if(!player.isDead() && player.getJumpCollisions() == 1){
 					Body body = player.getBody();
 					body.setLinearVelocity(0f, 0f);
-					if(Math.abs(body.getLinearVelocity().x) > SPEED)
-						body.setLinearVelocity(Math.signum(body.getLinearVelocity().x) * SPEED, body.getLinearVelocity().y);
 					return true;
 				}
 			}
