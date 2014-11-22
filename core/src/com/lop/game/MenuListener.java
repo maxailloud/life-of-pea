@@ -12,9 +12,11 @@ public class MenuListener extends ControllerAdapter {
 	}
 	@Override
 	public boolean buttonUp(Controller controller, int buttonIndex) {
-		Gdx.app.log("Controller", "Button down");
-		menu.render = !menu.render;
-		
+		if(buttonIndex == 7){
+			menu.render = !menu.render;
+			
+			menu.start();
+		}
 		return true;
 	}
 }

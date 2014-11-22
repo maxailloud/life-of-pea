@@ -1,6 +1,5 @@
 package com.lop.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controllers;
 
@@ -12,8 +11,6 @@ public class MainMenuScreen implements Screen{
 		
 		game.getInputs().clear();
 		Controllers.addListener(new MenuListener(this));
-		Gdx.app.log(getClass().getSimpleName(), Controllers.getControllers().size + "");
-		//game.getInputs().addProcessor(new MenuListener(this));
 	}
 
 	@Override
@@ -56,6 +53,10 @@ public class MainMenuScreen implements Screen{
 	public void dispose() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public void start() {
+		game.setScreen(new GameScreen(game));
 	}
 
 }
