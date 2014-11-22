@@ -26,7 +26,7 @@ public class GameScreen implements Screen {
 		this.game = game;
 		world = new World(new Vector2(0, -10), true);
 		
-		cam = new OrthographicCamera(16f, 9f);
+		cam = new OrthographicCamera(15f * 1.35f, 15f);
 		cam.translate(0, cam.viewportHeight / 2);
 		cam.update();
 		// First we create a body definition
