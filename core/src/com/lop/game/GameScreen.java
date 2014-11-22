@@ -105,6 +105,7 @@ public class GameScreen extends Stage implements Screen {
 		fixtureDef.shape = circle;
 		fixtureDef.density = 3.5f; 
 		fixtureDef.friction = 10.4f;
+		fixtureDef.restitution = 0.01f;
 		
 		body.createFixture(fixtureDef);
 
@@ -198,6 +199,7 @@ public class GameScreen extends Stage implements Screen {
 		bodyDef.type = BodyType.KinematicBody;
 
 		Body body = world.createBody(bodyDef);
+		body.setLinearDamping(1f);
 		PolygonShape rectangle = new PolygonShape();
 		rectangle.set(new float[]{0, 0,
 			width, 0,
