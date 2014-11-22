@@ -5,11 +5,17 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 
 public class GameScreen implements Screen {
@@ -26,26 +32,31 @@ public class GameScreen implements Screen {
 	private Sprite pauseSprite;
 	private boolean gamePaused = false;
 
+	private Array<Player> players;
+	
 	Box2DDebugRenderer debugRenderer;
-
+	
 	public GameScreen(MyGame game) {
 		this.game = game;
-		
+		players = new Array<Player>();
 		controllerListener = new GameControllerListener();
 		Controllers.addListener(controllerListener);
 		PauseListener pauseListener = new PauseListener(this);
 		Controllers.addListener(pauseListener);
 
-		world = new World(new Vector2(0, -10), true);
+		world = new World(new Vector2(0, -30), true);
 		world.setContactListener(controllerListener);
 		cam = new OrthographicCamera(30f * 1.35f, 30f);
 		cam.translate(0, cam.viewportHeight / 2);
 		cam.update();
 		
-		createPlayer(1);
-		createPlayer(2);
+		for(int i = 0; i < Controllers.getControllers().size ; i++){
+			createPlayer(i);
+		} 
 		initialGeneration();
-		// First we create a body definition
+		
+		
+		//Création du sol
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.KinematicBody;
 		bodyDef.position.set(0, 2);
@@ -79,6 +90,7 @@ public class GameScreen implements Screen {
 		Body body = world.createBody(bodyDef);
 		Player player = new Player(rank, game, body);
 		controllerListener.addPlayer(player);
+		players.add(player);
 		body.setUserData(player);
 
 		CircleShape circle = new CircleShape();
@@ -110,15 +122,42 @@ public class GameScreen implements Screen {
         }
 		if (!gamePaused) {
 			world.step(delta, 6, 2);
+			verticalScrolling();
 		}
 		else {
 			displayPauseOverlay();
 		}
-
-        //debugRenderer.render(world, cam.combined);
+		//debugRenderer.render(world, cam.combined);
 	}
-
-	public void createPlatform(float x, float y, float width, float height){
+	public void verticalScrolling(){
+		Player higher = null;
+		for(Player player : players){
+			if(higher == null || player.getBody().getPosition().y > higher.getBody().getPosition().y){
+				higher = player;
+			}
+		}
+		if(higher != null){
+			Vector2 position = higher.getBody().getPosition();
+			if(position.y  > cam.position.y + cam.viewportHeight * 0.2f)
+				cam.position.y = position.y - cam.viewportHeight * 0.2f; 
+		}
+		cam.update();
+	}
+	public void checkDie(){
+		for(Player player : players){
+			Vector2 pos = player.getBody().getPosition();
+			if(pos.y < cam.position.y - cam.viewportWidth * 0.7f)
+			{
+				die(player);
+				
+			}
+		}
+	}
+	public void die(Player player){
+		world.destroyBody(player.getBody());
+		player.setDead(true);
+	}
+	public Platform createPlatform(float x, float y, float width, float height){
 		// First we create a body definition
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.position.set(x, y);
@@ -145,24 +184,43 @@ public class GameScreen implements Screen {
 		rectangle.dispose();
 
 		createBonus(platform);
+		return platform;
 	}
-
 	public void generatePlatform(float height, float x){
 		float platformHeight = 1;
 		float width = MathUtils.random(2f, 4f);
 		createPlatform(x, height, width, platformHeight);
 	}
+	public Platform nextPlatform(Platform platform){
+		float angle = MathUtils.random(10f, 80f) * 2f;
+		//get pos
+		//dist entre 100 et dist max
+		Vector2 translation = new Vector2(Vector2.X).rotate(angle).scl(MathUtils.random(2f, 6f) * (1f + Math.abs(angle - 90f) / 90f));
+		
+		Vector2 position = platform.getBody().getPosition().add(new Vector2(platform.width /2, 1));
+		
+		Vector2 newPos = position.add(translation).sub(new Vector2(3, 1));
+		
+		if(newPos.x < -cam.viewportWidth / 2)
+			newPos.x = 0;
+		return createPlatform(newPos.x, newPos.y, MathUtils.random(3f, 6f), 1);
+	}
 	public void initialGeneration(){
-		float random = 0f;
-		float x = MathUtils.random() * cam.viewportWidth * 0.1f;
+		
+		Platform lastPlatform = createPlatform(-cam.viewportWidth / 4 - 1, 3, 2, 1);
+		for(int i = 0; i < 20; i++){
+			lastPlatform = nextPlatform(lastPlatform);
+
+		}
+		/*float x = MathUtils.random() * cam.viewportWidth * 0.1f;
 		for(int i = 3; i < cam.viewportWidth; i++){
-			if(MathUtils.random() < 0.8f + random ){
+			if(MathUtils.random() < 0.5f + random ){
 				generatePlatform(i, x + MathUtils.random(0.15f, 0.5f) * ((float)(MathUtils.random(0, 1) * 2 - 1))* cam.viewportWidth);
 				random = 0f;
 			}
 			else if(0.5f + random < 1f)
 				random+= 0.1f;
-		}
+		}*/
 	}
 	public void destroyPlatforms(){
 		
@@ -232,8 +290,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-
+		gamePaused = !gamePaused;
 	}
 
 	@Override

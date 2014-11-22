@@ -15,14 +15,18 @@ public class Player implements Renderable{
 	private Body body;
 	
 	private int jumpCollisions;
+	
+	private boolean dead;
 	public Player(int rank, MyGame game, Body body){
 		this.body = body;
 		this.game = game;
 		this.rank = rank;
-		this.jumpCollisions = 1;
+		this.jumpCollisions = 2;
 		String path = rank == 1 ? "alienGreen_round" : "alienBlue_round";
 		AtlasRegion tex = game.spritesAtlas.findRegion(path);
 		sprite = new Sprite(tex);
+		
+		setDead(false);
 	}
 	public Sprite getSprite(){
 		return sprite;
@@ -45,6 +49,12 @@ public class Player implements Renderable{
 			Shape shape = fix.getShape();
 			game.batch.draw(getSprite(), body.getPosition().x - shape.getRadius(), body.getPosition().y - shape.getRadius(), shape.getRadius() * 2, shape.getRadius() * 2);
 		}
+	}
+	public boolean isDead() {
+		return dead;
+	}
+	public void setDead(boolean dead) {
+		this.dead = dead;
 	}
 
 }
