@@ -31,7 +31,6 @@ public class Platform implements Renderable {
 			shape.getVertex(2, vertex2);
 			
 			Vector2 bounds = vertex2.sub(vertex0);
-			System.out.println(body.getPosition().x + " " + body.getPosition().y);
 			batch.draw(left, body.getPosition().x, body.getPosition().y - bounds.y, -bounds.x, bounds.y * 2);
 		}
 	}
