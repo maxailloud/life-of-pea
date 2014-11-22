@@ -4,8 +4,14 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 
 public class GameScreen implements Screen {
@@ -33,6 +39,7 @@ public class GameScreen implements Screen {
 		
 		createPlayer(1);
 		createPlayer(2);
+		generatePlatform(0);
 		// First we create a body definition
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.KinematicBody;
@@ -72,8 +79,7 @@ public class GameScreen implements Screen {
 		fixtureDef.shape = circle;
 		fixtureDef.density = 3.5f; 
 		fixtureDef.friction = 10.4f;
-		fixtureDef.restitution = 0.3f;
-
+		
 		body.createFixture(fixtureDef);
 
 		circle.dispose();
@@ -94,32 +100,35 @@ public class GameScreen implements Screen {
 	public void createPlatform(float x, float y, float width, float height){
 		// First we create a body definition
 		BodyDef bodyDef = new BodyDef();
+		bodyDef.position.set(x, y);
 		bodyDef.type = BodyType.KinematicBody;
-		bodyDef.position.set(0, 0);
+		bodyDef.position.set(3, 3);
 
 		Body body = world.createBody(bodyDef);
-		PolygonShape edge = new PolygonShape();
-		edge.set(new float[]{x, y,
-			x, y + height,
-			x + width, y + height,
-			x + width
+		PolygonShape rectangle = new PolygonShape();
+		rectangle.set(new float[]{0, 0,
+			width, 0,
+			width, height,
+			0, height
+			
+			
 		});
 
 		FixtureDef fixtureDef = new FixtureDef();
-		fixtureDef.shape = edge;
+		fixtureDef.shape = rectangle;
 		fixtureDef.friction = 12.4f;
 		
 		body.createFixture(fixtureDef);
+		body.setUserData(new Platform(body, game));
 		
-		edge.dispose();
+		rectangle.dispose();
 	}
 	public void generatePlatform(float height){
-		
+		createPlatform(2, 2, 3, 1);
 	}
 	public void destroyPlatforms(){
 		
 	}
-
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
