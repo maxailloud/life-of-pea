@@ -25,6 +25,8 @@ public class GameScreen implements Screen {
 
 	private Ground ground;
 
+	private boolean gamePaused = true;
+
 	public GameScreen(MyGame game) {
 		this.game = game;
 		
@@ -59,6 +61,8 @@ public class GameScreen implements Screen {
 		body.setUserData(ground);
 		
 		edge.dispose();
+
+		Controllers.addListener(new PauseListener(this));
 	}
 	public void createPlayer(int rank){
 		
@@ -84,19 +88,23 @@ public class GameScreen implements Screen {
 
 		circle.dispose();
 	}
+
 	@Override
 	public void render(float delta) {
-		game.batch.setProjectionMatrix(cam.combined);
-		Array<Body> bodies = new Array<Body>();
-		world.getBodies(bodies);
-		for(Body body : bodies){
-			if(body.getUserData() instanceof Renderable){
-				((Renderable)body.getUserData()).render(game.batch);
-			}
-			
+        game.batch.setProjectionMatrix(cam.combined);
+        Array<Body> bodies = new Array<Body>();
+        world.getBodies(bodies);
+        for(Body body : bodies){
+            if(body.getUserData() instanceof Renderable){
+                ((Renderable)body.getUserData()).render(game.batch);
+            }
+
+        }
+		if (gamePaused) {
+			world.step(delta, 6, 2);
 		}
-		world.step(delta, 6, 2);
 	}
+
 	public void createPlatform(float x, float y, float width, float height){
 		// First we create a body definition
 		BodyDef bodyDef = new BodyDef();
@@ -129,6 +137,7 @@ public class GameScreen implements Screen {
 	public void destroyPlatforms(){
 		
 	}
+
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
@@ -150,7 +159,7 @@ public class GameScreen implements Screen {
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-
+		gamePaused = !gamePaused;
 	}
 
 	@Override
