@@ -1,8 +1,11 @@
 package com.lop.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -25,13 +28,15 @@ public class GameScreen implements Screen {
 
 	private Ground ground;
 
-	private boolean gamePaused = true;
+	private Sprite pauseSprite;
+	private boolean gamePaused = false;
 
 	public GameScreen(MyGame game) {
 		this.game = game;
 		
 		controllerListener = new GameControllerListener();
 		Controllers.addListener(controllerListener);
+		Controllers.addListener(new PauseListener(this));
 		
 		world = new World(new Vector2(0, -10), true);
 		world.setContactListener(controllerListener);
@@ -62,7 +67,8 @@ public class GameScreen implements Screen {
 		
 		edge.dispose();
 
-		Controllers.addListener(new PauseListener(this));
+
+		pauseSprite = game.spritesAtlas.createSprite("green_panel");
 	}
 	public void createPlayer(int rank){
 		
@@ -100,8 +106,20 @@ public class GameScreen implements Screen {
             }
 
         }
-		if (gamePaused) {
+		if (!gamePaused) {
 			world.step(delta, 6, 2);
+		}
+		else {
+			game.batch.end();
+			game.pauseBatch.begin();
+			pauseSprite.setPosition((Gdx.graphics.getWidth() / 2) - (pauseSprite.getWidth() / 2), (Gdx.graphics.getHeight() / 2) - (pauseSprite.getHeight() / 2));
+			pauseSprite.setScale(2f);
+			pauseSprite.draw(game.pauseBatch);
+			String fontText = "Pause";
+			BitmapFont font = new BitmapFont();
+			font.draw(game.pauseBatch, fontText, Gdx.graphics.getWidth() / 2 - font.getBounds(fontText).width/2, Gdx.graphics.getHeight() / 2 + font.getBounds(fontText).height/2);
+			game.pauseBatch.end();
+			game.batch.begin();
 		}
 	}
 
