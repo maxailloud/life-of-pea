@@ -22,6 +22,7 @@ public class MyGame extends Game {
 	SpriteBatch pauseBatch;
 
 	public Sound gameSound;
+	public Sound clickSound;
 
 	@Override
 	public void create () {
@@ -34,6 +35,7 @@ public class MyGame extends Game {
 		batch = new SpriteBatch();
 		pauseBatch = new SpriteBatch();
 		gameSound = Gdx.audio.newSound(Gdx.files.internal("SmashRunner.mp3"));
+		clickSound = Gdx.audio.newSound(Gdx.files.internal("click.ogg"));
 	}
 	@Override
 	public void render() {

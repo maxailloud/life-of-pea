@@ -2,7 +2,6 @@ package com.lop.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -19,7 +18,6 @@ public class MainMenuScreen extends Stage implements Screen{
     public TextButtonStyle textButtonStyle;
     public BitmapFont font;
     public Skin skin;
-	public Sound clickSound;
 	private MenuListener menuListener;
 
 	public MainMenuScreen(Viewport viewport, MyGame myGame) {
@@ -30,7 +28,7 @@ public class MainMenuScreen extends Stage implements Screen{
 		game = myGame;
 		game.getInputs().clear();
 
-		clickSound = Gdx.audio.newSound(Gdx.files.internal("click.ogg"));
+		game.clickSound = Gdx.audio.newSound(Gdx.files.internal("click.ogg"));
 
 		font = new BitmapFont();
 		font.scale(0.5F);
@@ -45,7 +43,7 @@ public class MainMenuScreen extends Stage implements Screen{
 
 		button.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
-				clickSound.play();
+				game.clickSound.play();
 				game.gameSound.loop();
 				start();
 			}
