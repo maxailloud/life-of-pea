@@ -15,10 +15,7 @@ public class MenuListener extends ControllerAdapter {
 		if(buttonIndex == 7){
 			Controllers.removeListener(this);
 			menu.start();
-<<<<<<< HEAD
 			return false;
-=======
->>>>>>> refs/remotes/origin/master
 		}
 		return true;
 	}
