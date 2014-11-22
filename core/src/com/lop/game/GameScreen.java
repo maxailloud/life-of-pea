@@ -308,7 +308,7 @@ public class GameScreen extends Stage implements Screen {
 	}
 
 	public void displayWinOverlay() {
-		displaySuspendedOverlay("Joueur " + (winner.rank + 1) + " a gagné");
+		displaySuspendedOverlay("Joueur " + (winner.rank + 1) + " a gagnÃ©");
 	}
 
 	public void displaySuspendedOverlay(String message) {
