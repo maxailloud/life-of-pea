@@ -3,9 +3,10 @@ package com.lop.game;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.utils.Array;
 
-public class Ground implements Renderable{
-	private Sprite[] groundSprites = new Sprite[21];
+public class Ground {
+    private Array<Sprite> groundSprites = new Array<Sprite>();
 	private Sprite littleBushSprite;
 	private Sprite bigBushSprite;
 
@@ -14,14 +15,14 @@ public class Ground implements Renderable{
         littleBushSprite = spriteAtlas.createSprite("little_bush");
         bigBushSprite = spriteAtlas.createSprite("big_bush");
 
-        for (int i = 0; i < groundSprites.length; i++) {
-            groundSprites[i] = groundSprite;
+        for (int i = 0; i < 21; i++) {
+            groundSprites.add(groundSprite);
         }
     }
 
     public void render(SpriteBatch spriteBatch) {
-        for (int i = 0; i < groundSprites.length; i++) {
-            spriteBatch.draw(groundSprites[i], -21 + (2 * i), 0, 2f, 2f);
+        for (int i = 0; i < groundSprites.size; i++) {
+            spriteBatch.draw(groundSprites.get(i), -21 + (2 * i), 0, 2f, 2f);
         }
         spriteBatch.draw(littleBushSprite, -21 + 3, 2, 2f, 2f);
         spriteBatch.draw(littleBushSprite, -21 + 6, 2, 2f, 2f);

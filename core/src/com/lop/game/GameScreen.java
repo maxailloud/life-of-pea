@@ -14,15 +14,16 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 
 public class GameScreen extends Stage implements Screen {
-	private MyGame game;
+	public MyGame game;
 
 	private World world;
 	
-	private OrthographicCamera cam;
+	public OrthographicCamera cam;
 	
 	private GameControllerListener controllerListener;
 
 	private Ground ground;
+	private Background background;
 
 	private Sprite suspendedOverlaySprite;
 	private boolean gamePaused = false;
@@ -44,6 +45,7 @@ public class GameScreen extends Stage implements Screen {
 		Controllers.addListener(pauseListener);
 
 		ground = new Ground(game.spritesAtlas);
+		background = new Background(game.spritesAtlas);
 	}
 
 	public void init() {
@@ -69,7 +71,6 @@ public class GameScreen extends Stage implements Screen {
 		body.createFixture(fixtureDef);
 
 		edge.dispose();
-		body.setUserData(ground);
 
 		players = new Array<Player>();
 		playerWin = false;
@@ -116,6 +117,10 @@ public class GameScreen extends Stage implements Screen {
         game.batch.setProjectionMatrix(cam.combined);
         Array<Body> bodies = new Array<Body>();
         world.getBodies(bodies);
+
+		ground.render(game.batch);
+		background.render(game.pauseBatch, this);
+
         for(Body body : bodies){
         	Vector2 pos = body.getWorldCenter();
         	if(pos.y < cam.position.y - cam.viewportWidth * 0.7f && body.getUserData() instanceof Platform){
@@ -137,7 +142,7 @@ public class GameScreen extends Stage implements Screen {
 		else if (!gamePaused) {
 			world.step(delta, 6, 2);
 			verticalScrolling();
-			checkDie();
+//			checkDie();
 		}
 		else {
 			displayPauseOverlay();
