@@ -44,6 +44,8 @@ public class GameScreen extends Stage implements Screen {
 		Controllers.addListener(pauseListener);
 
 		ground = new Ground(game.spritesAtlas);
+
+		init();
 	}
 
 	public void init() {
