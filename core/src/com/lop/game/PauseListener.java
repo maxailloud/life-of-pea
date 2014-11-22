@@ -11,13 +11,10 @@ public class PauseListener extends ControllerAdapter {
 	}
 	@Override
 	public boolean buttonUp(Controller controller, int buttonIndex) {
-		if(buttonIndex == 7){
-			if(gameScreen.playerWin) {
-				gameScreen.restart();
-			}
-			else {
-				gameScreen.pause();
-			}
+		if(buttonIndex == 7 && !gameScreen.playerWin){
+			gameScreen.pause();
+		} else if (buttonIndex == 0 && gameScreen.playerWin) {
+			gameScreen.restart();
 		}
 		return true;
 	}

@@ -39,8 +39,6 @@ public class GameScreen extends Stage implements Screen {
 
 		cam = new OrthographicCamera(30f * 1.35f, 30f);
 
-		controllerListener = new GameControllerListener();
-		Controllers.addListener(controllerListener);
 		PauseListener pauseListener = new PauseListener(this);
 		Controllers.addListener(pauseListener);
 
@@ -48,6 +46,9 @@ public class GameScreen extends Stage implements Screen {
 	}
 
 	public void init() {
+		controllerListener = new GameControllerListener();
+		Controllers.addListener(controllerListener);
+
 		world = new World(new Vector2(0, -30), true);
 		world.setContactListener(controllerListener);
 
@@ -305,7 +306,7 @@ public class GameScreen extends Stage implements Screen {
 	}
 
 	public void restart() {
-		game.setScreen(game.gameScreen);
+		init();
 	}
 
 	@Override
