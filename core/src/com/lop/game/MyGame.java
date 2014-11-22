@@ -3,39 +3,41 @@ package com.lop.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.EdgeShape;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 public class MyGame extends Game {
-	private MainMenuScreen menu;
+	public TextureAtlas spritesAtlas;
+	private AssetManager manager;
+	private Screen menu;
+	private FPSLogger fpsLog;
 	private InputMultiplexer inputs;
 	SpriteBatch batch;
 	Texture img;
 
 	@Override
 	public void create () {
+		manager = new AssetManager();
+		fpsLog = new FPSLogger();
 		inputs = new InputMultiplexer();
-		
-		menu = new MainMenuScreen(this);
+		spritesAtlas =  new TextureAtlas(Gdx.files.internal("spritesheet.atlas"));
+		menu = new GameScreen(this);
 		setScreen(menu);
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+		
+		
 
 		
 
 	}
 	@Override
 	public void render() {
+		fpsLog.log();
 		Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
@@ -44,5 +46,8 @@ public class MyGame extends Game {
 	}
 	public InputMultiplexer getInputs() {
 		return inputs;
+	}
+	public AssetManager getAssetManager(){
+		return manager;
 	}
 }
