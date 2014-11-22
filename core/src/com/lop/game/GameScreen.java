@@ -44,8 +44,6 @@ public class GameScreen extends Stage implements Screen {
 		Controllers.addListener(pauseListener);
 
 		ground = new Ground(game.spritesAtlas);
-
-		init();
 	}
 
 	public void init() {
@@ -337,7 +335,7 @@ public class GameScreen extends Stage implements Screen {
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
-
+		init();
 	}
 
 	@Override

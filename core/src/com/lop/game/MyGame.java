@@ -30,7 +30,7 @@ public class MyGame extends Game {
 		manager = new AssetManager();
 		fpsLog = new FPSLogger();
 		inputs = new InputMultiplexer();
-		spritesAtlas =  new TextureAtlas(Gdx.files.internal("spritesheet.atlas"));
+		spritesAtlas = new TextureAtlas(Gdx.files.internal("spritesheet.atlas"));
 		menuScreen = new MainMenuScreen(new ScreenViewport(), this);
 		gameScreen = new GameScreen(this);
 		setScreen(menuScreen);

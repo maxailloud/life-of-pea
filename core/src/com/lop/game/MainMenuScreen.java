@@ -100,7 +100,7 @@ public class MainMenuScreen extends Stage implements Screen{
 	public void start() {
 		Controllers.removeListener(menuListener);
 		this.getActors().removeValue(button, true);
-		game.setScreen(new GameScreen(game));
+		game.setScreen(game.gameScreen);
 	}
 
 }
