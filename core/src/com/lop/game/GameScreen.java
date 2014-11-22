@@ -123,6 +123,7 @@ public class GameScreen implements Screen {
 		if (!gamePaused) {
 			world.step(delta, 6, 2);
 			verticalScrolling();
+			checkDie();
 		}
 		else {
 			displayPauseOverlay();
@@ -146,10 +147,9 @@ public class GameScreen implements Screen {
 	public void checkDie(){
 		for(Player player : players){
 			Vector2 pos = player.getBody().getPosition();
-			if(pos.y < cam.position.y - cam.viewportWidth * 0.7f)
+			if(pos.y < cam.position.y - cam.viewportWidth * 0.7f && !player.isDead())
 			{
 				die(player);
-				
 			}
 		}
 	}
