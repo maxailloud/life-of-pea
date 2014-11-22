@@ -1,28 +1,69 @@
 package com.lop.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class MainMenuScreen implements Screen{
+public class MainMenuScreen extends Stage implements Screen{
 	private MyGame game;
-	public boolean render = true;
-	public MainMenuScreen(MyGame myGame) {
+	public TextButton button;
+    public TextButtonStyle textButtonStyle;
+    public BitmapFont font;
+    public Skin skin;
+	public Sound clickSound;
+
+	public MainMenuScreen(Viewport viewport, MyGame myGame) {
+		super(viewport);
+
+		Gdx.input.setInputProcessor(this);
+
 		game = myGame;
-		
 		game.getInputs().clear();
+
+		clickSound = Gdx.audio.newSound(Gdx.files.internal("click.ogg"));
+
+		font = new BitmapFont();
+		font.scale(0.5F);
+        skin = new Skin();
+        skin.addRegions(game.spritesAtlas);
+        textButtonStyle = new TextButtonStyle();
+        textButtonStyle.font = font;
+        textButtonStyle.up = skin.getDrawable("green_button00");
+        textButtonStyle.down = skin.getDrawable("green_button01");
+        button = new TextButton("Play", textButtonStyle);
+		button.setCenterPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+
+		button.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				clickSound.play();
+				game.setScreen(new GameScreen(game));
+			}
+		});
+
+		this.addActor(button);
+
 		Controllers.addListener(new MenuListener(this));
 	}
 
 	@Override
 	public void render(float delta) {
-		if(render)
-			game.batch.draw(game.img, 0, 0);
+		this.act(delta);
+		this.draw();
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
