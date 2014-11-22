@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Shape;
 
@@ -45,6 +46,8 @@ public class Player implements Renderable{
 	}
 	@Override
 	public void render(SpriteBatch batch) {
+		if(Math.abs(body.getLinearVelocity().x) < 0.25f && body.getLinearVelocity().y > 0 &&  getJumpCollisions() == 1)
+			body.setLinearVelocity(0, 0);
 		for(Fixture fix : body.getFixtureList()){
 			Shape shape = fix.getShape();
 			game.batch.draw(getSprite(), body.getPosition().x - shape.getRadius(), body.getPosition().y - shape.getRadius(), shape.getRadius() * 2, shape.getRadius() * 2);
@@ -55,6 +58,11 @@ public class Player implements Renderable{
 	}
 	public void setDead(boolean dead) {
 		this.dead = dead;
+	}
+	public void scale(float scale) {
+		Fixture fix = body.getFixtureList().get(0);
+		CircleShape shape = (CircleShape)fix.getShape();
+		shape.setRadius(shape.getRadius() * scale);
 	}
 
 }
