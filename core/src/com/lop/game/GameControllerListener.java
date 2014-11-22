@@ -91,9 +91,6 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 			if(contact.isTouching() && checkJumpCollision(b, a))
 				player.incrementJumpCollisions();
 		}
-
-		
-		
 	}
 	public boolean checkJumpCollision(Body playerBody, Body b){
 		return playerBody.getPosition().y >= b.getPosition().y + b.getFixtureList().get(0).getShape().getRadius() * 2;

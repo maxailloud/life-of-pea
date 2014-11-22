@@ -29,28 +29,29 @@ public class GameScreen extends Stage implements Screen {
 
 	private Array<Player> players;
 
-	private boolean playerWin = false;
+	public boolean playerWin = false;
 	private Player winner;
 
-	Box2DDebugRenderer debugRenderer;
-	
 	Platform lastPlatform;
 	public GameScreen(MyGame game) {
 		this.game = game;
 
+		suspendedOverlaySprite = game.spritesAtlas.createSprite("green_panel");
+
+		cam = new OrthographicCamera(30f * 1.35f, 30f);
+
+		PauseListener pauseListener = new PauseListener(this);
+		Controllers.addListener(pauseListener);
+
+		ground = new Ground(game.spritesAtlas);
+	}
+
+	public void init() {
 		controllerListener = new GameControllerListener();
 		Controllers.addListener(controllerListener);
-		PauseListener pauseListener = new PauseListener(this);
-		RestartListener restartListener = new RestartListener(this);
-		Controllers.addListener(pauseListener);
-		Controllers.addListener(restartListener);
-
-		suspendedOverlaySprite = game.spritesAtlas.createSprite("green_panel");
 
 		world = new World(new Vector2(0, -90), true);
 		world.setContactListener(controllerListener);
-
-		cam = new OrthographicCamera(30f * 1.35f, 30f);
 
 		//Création du sol
 		BodyDef bodyDef = new BodyDef();
@@ -68,21 +69,14 @@ public class GameScreen extends Stage implements Screen {
 		body.createFixture(fixtureDef);
 
 		edge.dispose();
-
-		ground = new Ground(game.spritesAtlas);
 		body.setUserData(ground);
 
-		debugRenderer = new Box2DDebugRenderer();
-
-		init();
-	}
-
-	public void init() {
 		players = new Array<Player>();
 		playerWin = false;
 		winner = null;
+		gamePaused = false;
 
-		cam.translate(0, cam.viewportHeight / 2);
+		cam.position.y = cam.viewportHeight / 2;
 		cam.update();
 
 		for(int i = 0; i < Controllers.getControllers().size; i++){
@@ -90,6 +84,7 @@ public class GameScreen extends Stage implements Screen {
 		}
 		initialGeneration();
 	}
+
 	public void createPlayer(int rank){
 		
 		// First we create a body definition
@@ -118,7 +113,6 @@ public class GameScreen extends Stage implements Screen {
 
 	@Override
 	public void render(float delta) {
-		
         game.batch.setProjectionMatrix(cam.combined);
         Array<Body> bodies = new Array<Body>();
         world.getBodies(bodies);
@@ -328,7 +322,7 @@ public class GameScreen extends Stage implements Screen {
 	}
 
 	public void restart() {
-		game.setScreen(new GameScreen(game));
+		init();
 	}
 
 	@Override
@@ -340,7 +334,7 @@ public class GameScreen extends Stage implements Screen {
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
-
+		init();
 	}
 
 	@Override
