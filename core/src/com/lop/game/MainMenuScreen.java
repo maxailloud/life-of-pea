@@ -5,7 +5,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -20,7 +19,6 @@ public class MainMenuScreen extends Stage implements Screen{
     public TextButtonStyle textButtonStyle;
     public BitmapFont font;
     public Skin skin;
-    public TextureAtlas buttonAtlas;
 	public Sound clickSound;
 
 	public MainMenuScreen(Viewport viewport, MyGame myGame) {
@@ -36,8 +34,7 @@ public class MainMenuScreen extends Stage implements Screen{
 		font = new BitmapFont();
 		font.scale(0.5F);
         skin = new Skin();
-        buttonAtlas = new TextureAtlas("spritesheet.atlas");
-        skin.addRegions(buttonAtlas);
+        skin.addRegions(game.spritesAtlas);
         textButtonStyle = new TextButtonStyle();
         textButtonStyle.font = font;
         textButtonStyle.up = skin.getDrawable("green_button00");
