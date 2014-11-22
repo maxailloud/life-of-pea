@@ -4,15 +4,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.EdgeShape;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.Shape;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 
 public class GameScreen implements Screen {
@@ -23,6 +16,9 @@ public class GameScreen implements Screen {
 	private OrthographicCamera cam;
 	
 	private GameControllerListener controllerListener;
+
+	private Ground ground;
+
 	public GameScreen(MyGame game) {
 		this.game = game;
 		
@@ -40,7 +36,7 @@ public class GameScreen implements Screen {
 		// First we create a body definition
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.KinematicBody;
-		bodyDef.position.set(0, 0);
+		bodyDef.position.set(0, 1);
 
 		Body body = world.createBody(bodyDef);
 		EdgeShape edge = new EdgeShape();
@@ -51,6 +47,8 @@ public class GameScreen implements Screen {
 		fixtureDef.friction = 12.4f;
 		
 		body.createFixture(fixtureDef);
+
+		ground = new Ground(game.spritesAtlas);
 		
 		edge.dispose();
 	}
@@ -59,7 +57,7 @@ public class GameScreen implements Screen {
 		// First we create a body definition
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
-		bodyDef.position.set(5 * rank - 5, 0);
+		bodyDef.position.set(5 * rank - 5, 2);
 
 		Body body = world.createBody(bodyDef);
 		Player player = new Player(rank, game, body);
@@ -74,7 +72,7 @@ public class GameScreen implements Screen {
 		fixtureDef.density = 3.5f; 
 		fixtureDef.friction = 10.4f;
 		fixtureDef.restitution = 0.3f;
-		
+
 		body.createFixture(fixtureDef);
 
 		circle.dispose();
@@ -92,11 +90,12 @@ public class GameScreen implements Screen {
 					Shape shape = fix.getShape();
 					game.batch.draw(player.getSprite(), body.getPosition().x, body.getPosition().y, shape.getRadius() * 2, shape.getRadius() * 2);
 				}
-				
+
 			}
-			
+
 		}
 		world.step(delta, 6, 2);
+		ground.render(game.batch);
 	}
 	public void generatePlatform(float height){
 		
@@ -104,6 +103,7 @@ public class GameScreen implements Screen {
 	public void destroyPlatforms(){
 		
 	}
+
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
