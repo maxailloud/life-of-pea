@@ -98,7 +98,7 @@ public class GameScreen extends Stage implements Screen {
         world.getBodies(bodies);
 
 		ground.render(game.batch);
-		background.render(this);
+		background.render(game.batch, game.pauseBatch, cam.position.y);
 
         for(Body body : bodies){
 			if (!(body.getUserData() instanceof Player)) {
