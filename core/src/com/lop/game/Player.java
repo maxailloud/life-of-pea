@@ -42,19 +42,19 @@ public class Player implements Renderable{
 		
 		String path = "alien";
 		switch(rank){
-		case 1: 
+		case 0: 
 			path += "Green_round";
 			break;
-		case 2: 
+		case 1: 
 			path += "Blue_round";
 			break;
-		case 3: 
+		case 2: 
 			path += "Pink_round";
 			break;
-		case 4: 
+		case 3: 
 			path += "Yellow_round";
 			break;
-		case 5: 
+		case 4: 
 			path += "Beige_round";
 			break;
 		default :
@@ -87,8 +87,6 @@ public class Player implements Renderable{
 	}
 	@Override
 	public void render(SpriteBatch batch) {
-		Vector3 onScreen = game.gameScreen.cam.unproject(new Vector3(body.getPosition().x, body.getPosition().y, 0));
-		
 		if(Math.abs(body.getLinearVelocity().x) < 0.25f && body.getLinearVelocity().y > 0 &&  getJumpCollisions() == 1)
 			body.setLinearVelocity(0, 0);
 		for(Fixture fix : body.getFixtureList()){
