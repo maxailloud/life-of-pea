@@ -182,30 +182,7 @@ public class GameScreen extends Stage implements Screen {
 		player.setDead(true);
 	}
 	public Platform createPlatform(float x, float y, float width, float height){
-		// First we create a body definition
-		BodyDef bodyDef = new BodyDef();
-		bodyDef.position.set(x, y);
-		bodyDef.type = BodyType.KinematicBody;
-
-		Body body = world.createBody(bodyDef);
-		body.setLinearDamping(1f);
-		PolygonShape rectangle = new PolygonShape();
-		rectangle.set(new float[]{0, 0,
-			width, 0,
-			width, height,
-			0, height
-			
-			
-		});
-
-		FixtureDef fixtureDef = new FixtureDef();
-		fixtureDef.shape = rectangle;
-		fixtureDef.friction = 0.5f;
-		body.createFixture(fixtureDef);
-		Platform platform = new Platform(body, game);
-		body.setUserData(platform);
-		
-		rectangle.dispose();
+		Platform platform = generator.createPlatform(x, y, width, height, world, game);
 
 		createBonus(platform);
 		return platform;
