@@ -78,7 +78,7 @@ public class GameScreen extends Stage implements Screen {
 
 		edge.dispose();
 
-		players = new Array<Player>();
+		players = new Array<>();
 		playerWin = false;
 		winner = null;
 		gamePaused = false;
@@ -122,26 +122,32 @@ public class GameScreen extends Stage implements Screen {
 	@Override
 	public void render(float delta) {
         game.batch.setProjectionMatrix(cam.combined);
-        Array<Body> bodies = new Array<Body>();
+        Array<Body> bodies = new Array<>();
         world.getBodies(bodies);
 
 		ground.render(game.batch);
 		background.render(this);
 
         for(Body body : bodies){
-        	Vector2 pos = body.getWorldCenter();
-        	if(pos.y < cam.position.y - cam.viewportWidth * 0.7f && body.getUserData() instanceof Platform){
-        		world.destroyBody(body);
-        		lastPlatform = nextPlatform(lastPlatform);
-        	}
-            if(body.getUserData() instanceof Renderable){
-				if (body.getUserData() instanceof Destroyable && ((Destroyable)body.getUserData()).toBeDestroy) {
+			if (!(body.getUserData() instanceof Player)) {
+				Vector2 pos = body.getWorldCenter();
+				if(pos.y < cam.position.y - cam.viewportWidth * 0.7f && body.getUserData() instanceof Platform){
 					world.destroyBody(body);
-				} else {
-					((Renderable)body.getUserData()).render(game.batch);
+					lastPlatform = nextPlatform(lastPlatform);
 				}
-            }
+				if(body.getUserData() instanceof Renderable){
+					if (body.getUserData() instanceof Destroyable && ((Destroyable)body.getUserData()).toBeDestroy) {
+						world.destroyBody(body);
+					} else {
+						((Renderable)body.getUserData()).render(game.batch);
+					}
+				}
+			}
         }
+
+		for(Player player: players) {
+			player.render(game.batch);
+		}
 
 		if (playerWin) {
 			displayWinOverlay();
@@ -172,7 +178,7 @@ public class GameScreen extends Stage implements Screen {
 	}
 
 	public Array<Player> getAlivePlayers() {
-		Array<Player> alivePlayers = new Array<Player>();
+		Array<Player> alivePlayers = new Array<>();
 
 		for(Player player : players){
 			if (!player.isDead()) {
@@ -232,11 +238,7 @@ public class GameScreen extends Stage implements Screen {
 		createBonus(platform);
 		return platform;
 	}
-	public void generatePlatform(float height, float x){
-		float platformHeight = 1;
-		float width = MathUtils.random(2f, 4f);
-		createPlatform(x, height, width, platformHeight);
-	}
+
 	public Platform nextPlatform(Platform platform){
 		Vector2 position = platform.getBody().getPosition().add(new Vector2(platform.width /2, 1));
 		Vector2 newPos;
@@ -273,11 +275,8 @@ public class GameScreen extends Stage implements Screen {
 		float angle = MathUtils.random(-70f, -40f) * (float)(((MathUtils.random(0, 1)+ 1) -1)) + 90f;
 		
 		Vector2 translation = new Vector2(Vector2.X).rotate(angle).scl((float) (MathUtils.random(4f, 6f) * (1f + (Math.sin((90f - angle) * MathUtils.degRad) + 1f) / 5f)));
-		
-		
-		
-		Vector2 newPos = position.add(translation).sub(new Vector2(3, 1));
-		return newPos;
+
+		return position.add(translation).sub(new Vector2(3, 1));
 	}
 	public void initialGeneration(){
 		
@@ -286,18 +285,6 @@ public class GameScreen extends Stage implements Screen {
 			lastPlatform = nextPlatform(lastPlatform);
 
 		}
-		/*float x = MathUtils.random() * cam.viewportWidth * 0.1f;
-		for(int i = 3; i < cam.viewportWidth; i++){
-			if(MathUtils.random() < 0.5f + random ){
-				generatePlatform(i, x + MathUtils.random(0.15f, 0.5f) * ((float)(MathUtils.random(0, 1) * 2 - 1))* cam.viewportWidth);
-				random = 0f;
-			}
-			else if(0.5f + random < 1f)
-				random+= 0.1f;
-		}*/
-	}
-	public void destroyPlatforms(){
-		
 	}
 
 	public void createBonus(Platform platform) {
