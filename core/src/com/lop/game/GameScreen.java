@@ -205,6 +205,7 @@ public class GameScreen extends Stage implements Screen {
 
 		Array<Player> alivePlayers = getAlivePlayers();
 		if (1 == alivePlayers.size) {
+			game.victorySound.play();
 			playerWin = true;
 			winner = players.first();
 			startOverlayAnim();

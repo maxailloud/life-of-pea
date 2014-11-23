@@ -42,22 +42,24 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 	}
 	@Override
 	public boolean buttonDown(Controller controller, int buttonIndex) {
-		int controllerIndex = Controllers.getControllers().indexOf(controller, true);
-		if(controllerIndex < players.size() && buttonIndex == 0)
-		{
-			Player player = players.get(controllerIndex);
-			if(!player.isDead()){
-				player.jump(controller.getAxis(1), myGame.jumpSound);
+		if (!myGame.gameScreen.playerWin) {
+			int controllerIndex = Controllers.getControllers().indexOf(controller, true);
+			if(controllerIndex < players.size() && buttonIndex == 0)
+			{
+				Player player = players.get(controllerIndex);
+				if(!player.isDead()){
+					player.jump(controller.getAxis(1), myGame.jumpSound);
+				}
+				return true;
 			}
-			return true;
-		}
-		if(controllerIndex < players.size() && buttonIndex == 1)
-		{
-			Player player = players.get(controllerIndex);
-			if(!player.isDead()){
-				player.dash(controller.getAxis(1), controller.getAxis(0));
+			if(controllerIndex < players.size() && buttonIndex == 1)
+			{
+				Player player = players.get(controllerIndex);
+				if(!player.isDead()){
+					player.dash(controller.getAxis(1), controller.getAxis(0));
+				}
+				return true;
 			}
-			return true;
 		}
 		return super.buttonUp(controller, buttonIndex);
 	}

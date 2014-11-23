@@ -54,6 +54,8 @@ public class MainMenuScreen extends Stage implements Screen{
 			}
 		});
 
+//		game.font24.draw(game.pauseBatch, "Life Of Pea", 250f, 250f);
+
 		this.addActor(button);
 
 		menuListener = new MenuListener(this);
