@@ -34,7 +34,6 @@ public class MyGame extends Game {
 	@Override
 	public void create () {
 		tweenManager = new TweenManager();
-		manager = new AssetManager();
 		inputs = new InputMultiplexer();
 		spritesAtlas = new TextureAtlas(Gdx.files.internal("spritesheet.atlas"));
 		for(Texture tex : spritesAtlas.getTextures().iterator()){
