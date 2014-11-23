@@ -94,7 +94,7 @@ public class GameScreen extends Stage implements Screen {
 		cam.position.y = cam.viewportHeight / 2;
 		cam.update();
 
-		for(int i = 0; i < Controllers.getControllers().size + 1; i++){
+		for(int i = 0; i < Controllers.getControllers().size; i++){
 			generator.createPlayer(Controllers.getControllers().size, i, world, game, controllerListener, players);
 		}
 		initialGeneration();

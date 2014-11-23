@@ -50,8 +50,6 @@ public class MainMenuScreen extends Stage implements Screen{
 		button.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				game.clickSound.play();
-				game.gameSound.stop();
-				game.gameSound.loop();
 				start();
 			}
 		});
@@ -152,6 +150,8 @@ public class MainMenuScreen extends Stage implements Screen{
 		Controllers.removeListener(menuListener);
 		this.getActors().removeValue(button, true);
 		game.setScreen(game.gameScreen);
+		game.gameSound.stop();
+		game.gameSound.loop();
 	}
 
 }
