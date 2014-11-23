@@ -19,17 +19,8 @@ public class Platform implements Renderable {
 		this.body = body;
 		AtlasRegion tex = game.spritesAtlas.findRegion("grassHalfLeft");
 		left = new Sprite(tex);
-		tex.getTexture().setFilter(TextureFilter.MipMapLinearNearest,
-				TextureFilter.Linear);
-		tex = game.spritesAtlas.findRegion("grassHalfMid");
 		mid = new Sprite(tex);
-		tex.getTexture().setFilter(TextureFilter.MipMapLinearNearest,
-				TextureFilter.Linear);
-		tex = game.spritesAtlas.findRegion("grassHalfRight");
 		right = new Sprite(tex);
-		tex.getTexture().setFilter(TextureFilter.MipMapLinearNearest,
-				TextureFilter.Linear);
-		Gdx.gl20.glGenerateMipmap(GL20.GL_TEXTURE_2D);
 		PolygonShape shape = (PolygonShape)(body.getFixtureList().get(0).getShape());
 		Vector2 vertex0 = new Vector2();
 		shape.getVertex(0, vertex0);

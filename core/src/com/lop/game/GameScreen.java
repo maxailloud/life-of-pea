@@ -8,8 +8,14 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 
@@ -143,7 +149,7 @@ public class GameScreen extends Stage implements Screen {
 		else if (!gamePaused) {
 			world.step(delta, 6, 2);
 			verticalScrolling();
-//			checkDie();
+			checkDie();
 		}
 		else {
 			displayPauseOverlay();
@@ -242,7 +248,25 @@ public class GameScreen extends Stage implements Screen {
 		if(newPos.x > cam.viewportWidth / 2 * 0.4f)
 			newPos.x = cam.viewportWidth / 2 * 0.4f;
 		}while(newPos.x < -cam.viewportWidth / 2  * 0.4f || newPos.x > cam.viewportWidth / 2 * 0.4f);
-		return createPlatform(newPos.x, newPos.y, MathUtils.random(3f, 6f), 1);
+		
+		Platform platform2 = createPlatform(newPos.x, newPos.y, MathUtils.random(3f, 6f), 1);
+		
+		
+		Platform returnPlat = platform2;
+		while(MathUtils.random() > MathUtils.clamp((float) (1f - 2f /(Math.log(newPos.y))), 0.2f, 1f)){
+			Platform platform3;
+			if(MathUtils.random() > 0.5f){
+				platform3 = createPlatform(newPos.x + platform2.width / 2 +  MathUtils.random(3f, 10f), newPos.y, MathUtils.random(3f, 6f), 1);
+			}
+			else
+			{
+				platform3 = createPlatform(newPos.x - platform2.width / 2 -  MathUtils.random(3f, 10f), newPos.y, MathUtils.random(3f, 6f), 1);
+			  
+			}
+			if(MathUtils.random() > 0.5f)
+				returnPlat = platform3;
+		}
+		return returnPlat;
 	}
 	public Vector2 randomNewPos(Vector2 position)
 	{

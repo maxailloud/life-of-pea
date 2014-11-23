@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
@@ -46,9 +47,6 @@ public class Player implements Renderable{
 			break;
 		}
 		AtlasRegion tex = game.spritesAtlas.findRegion(path);
-		tex.getTexture().setFilter(TextureFilter.MipMapLinearNearest,
-				TextureFilter.Linear);
-		Gdx.gl20.glGenerateMipmap(GL20.GL_TEXTURE_2D);
 		sprite = new Sprite(tex);
 		
 		setDead(false);
@@ -74,7 +72,12 @@ public class Player implements Renderable{
 			body.setLinearVelocity(0, 0);
 		for(Fixture fix : body.getFixtureList()){
 			Shape shape = fix.getShape();
-			game.batch.draw(getSprite(), body.getPosition().x - shape.getRadius(), body.getPosition().y - shape.getRadius(), shape.getRadius() * 2, shape.getRadius() * 2);
+			System.out.println(body.getAngle());
+			sprite.setRotation(body.getAngle() * MathUtils.radDeg);
+			float width = shape.getRadius() * 2;
+			float height = shape.getRadius() * 2;
+			game.batch.draw(sprite, body.getPosition().x - shape.getRadius(), body.getPosition().y - shape.getRadius(), width / 2f, height / 2f, width, height, 1f, 1f, sprite.getRotation());
+					
 		}
 	}
 	public boolean isDead() {
