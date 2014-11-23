@@ -104,12 +104,11 @@ public class Player implements Renderable{
 		}
 	}
 	public void dash(float axisX, float axisY) {
-		Vector2 axis = new Vector2(axisX, -axisY);
+		Vector2 axis = new Vector2(axisX, -axisY * 1f / 3f);
 		if(canDash){
 			canDash = false;
 			body.setLinearDamping(1f);
 			body.applyLinearImpulse(axis.scl(50f *  getMassRatio()), body.getWorldCenter(), true);
-		
 		}
 	}
 	public void move(float value) {

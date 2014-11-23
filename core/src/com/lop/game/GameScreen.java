@@ -68,7 +68,7 @@ public class GameScreen extends Stage implements Screen {
 
 		Body body = world.createBody(bodyDef);
 		EdgeShape edge = new EdgeShape();
-		edge.set(-50, 0, 100, 0);
+		edge.set(-30f * 1.35f / 2f, 0, 30 * 1.35f / 2f, 0);
 
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = edge;
@@ -86,7 +86,7 @@ public class GameScreen extends Stage implements Screen {
 		cam.position.y = cam.viewportHeight / 2;
 		cam.update();
 
-		for(int i = 0; i < Controllers.getControllers().size + 1; i++){
+		for(int i = 0; i < Controllers.getControllers().size; i++){
 			createPlayer(i);
 		}
 		initialGeneration();
