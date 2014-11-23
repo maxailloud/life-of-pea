@@ -103,7 +103,7 @@ public class GameScreen extends Stage implements Screen {
 		cam.update();
 
 		for(int i = 0; i < Controllers.getControllers().size; i++){
-			generator.createPlayer(i, world, game, controllerListener, players);
+			generator.createPlayer(Controllers.getControllers().size, i, world, game, controllerListener, players);
 		}
 		initialGeneration();
 
@@ -164,7 +164,7 @@ public class GameScreen extends Stage implements Screen {
 		else if (!gamePaused) {
 			world.step(delta, 6, 2);
 			verticalScrolling();
-			checkDie();
+			//checkDie();
 		}
 		else {
 			displayPauseOverlay();

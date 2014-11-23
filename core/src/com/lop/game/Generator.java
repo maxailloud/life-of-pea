@@ -5,12 +5,12 @@ import com.badlogic.gdx.utils.Array;
 
 public class Generator {
 
-    public void createPlayer(int rank, World world, MyGame game, GameControllerListener  controllerListener, Array<Player> players){
+    public void createPlayer(int playerCount, int rank, World world, MyGame game, GameControllerListener  controllerListener, Array<Player> players){
 
 		// First we create a body definition
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyDef.BodyType.DynamicBody;
-		bodyDef.position.set(5 * rank - 5, 2);
+		bodyDef.position.set(5f * rank - (float)(playerCount - 1) * 5f /2f, 2.01f);
 
 		Body body = world.createBody(bodyDef);
 		Player player = new Player(rank, game, body);

@@ -113,15 +113,18 @@ public class Player implements Renderable{
 	public void jump(float axisValue) {
 		if(getJumpCollisions() > 0){
 			body.setLinearDamping(1f);
-			body.applyLinearImpulse(axisValue * SPEED * 2f *  getMassRatio(), 50f *  getMassRatio(), body.getWorldCenter().x, body.getWorldCenter().y, true);
+			
+			Vector2 jump = (new Vector2( 50f *  getMassRatio(), 0).rotate(new Vector2(axisValue, 1f).angle()));
+			body.applyLinearImpulse(jump, body.getWorldCenter(), true);
 		}
 	}
 	public void dash(float axisX, float axisY) {
-		Vector2 axis = new Vector2(axisX, -axisY * 1f / 3f);
+		Vector2 axis = new Vector2(axisX, -axisY);
+		Vector2 dash = new Vector2(50f *  getMassRatio(), 0).rotate(axis.angle()).scl(1f, 1f/3f);
 		if(canDash){
 			canDash = false;
 			body.setLinearDamping(1f);
-			body.applyLinearImpulse(axis.scl(50f *  getMassRatio()), body.getWorldCenter(), true);
+			body.applyLinearImpulse(dash, body.getWorldCenter(), true);
 		}
 	}
 	public void move(float value) {
