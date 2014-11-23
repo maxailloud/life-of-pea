@@ -15,14 +15,14 @@ public class Ground {
         littleBushSprite = spriteAtlas.createSprite("little_bush");
         bigBushSprite = spriteAtlas.createSprite("big_bush");
 
-        for (int i = 0; i < 21; i++) {
+        for (int i = 0; i < 22; i++) {
             groundSprites.add(groundSprite);
         }
     }
 
     public void render(SpriteBatch spriteBatch) {
         for (int i = 0; i < groundSprites.size; i++) {
-            spriteBatch.draw(groundSprites.get(i), -21 + (2 * i), 0, 2.01f, 2f);
+            spriteBatch.draw(groundSprites.get(i), -21 + (1.95f * i), 0, 2f, 2f);
         }
         spriteBatch.draw(littleBushSprite, -21 + 3, 2, 2f, 2f);
         spriteBatch.draw(littleBushSprite, -21 + 6, 2, 2f, 2f);

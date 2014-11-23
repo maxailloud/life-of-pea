@@ -10,7 +10,11 @@ import java.util.TreeMap;
 public class Background {
 	private TreeMap<Float, Cloud> cloudTreeMap = new TreeMap<>();
 
-    public Background(TextureAtlas spriteAtlas) {
+    public Background() {
+    }
+
+    public void initClouds(TextureAtlas spriteAtlas) {
+        cloudTreeMap.clear();
         for (int i = 0; i < 20; i++) {
             Cloud cloud = new Cloud(spriteAtlas.createSprite("cloud" + MathUtils.random(1, 3)));
             cloud.sprite.setSize(129f, 71f);
@@ -42,7 +46,7 @@ public class Background {
 
             if(0 > cloud.sprite.getY() + cloud.sprite.getHeight()){
                 initCloud(cloud);
-                cloud.sprite.setY(gameScreen.cam.position.y + Gdx.graphics.getHeight() + (10 * cloud.distanceRatio));
+                cloud.sprite.setY(gameScreen.cam.position.y + Gdx.graphics.getHeight() + (10 * cloud.distanceRatio) + yDelta);
             } else {
                 cloud.sprite.setY(cloud.sprite.getY() + yDelta);
             }
