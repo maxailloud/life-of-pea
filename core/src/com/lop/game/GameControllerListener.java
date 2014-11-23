@@ -67,7 +67,7 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 	public void beginContact(Contact contact) {
 		Body a = contact.getFixtureA().getBody();
 		Body b = contact.getFixtureB().getBody();
-
+		
 		Bonus bonus = null;
 		Player player = null;
 		if(a.getUserData() instanceof Bonus && b.getUserData() instanceof Player) {

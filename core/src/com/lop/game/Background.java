@@ -35,7 +35,7 @@ public class Background {
     public void render(GameScreen gameScreen) {
         gameScreen.game.batch.end();
         gameScreen.game.pauseBatch.begin();
-
+        
         for(Map.Entry<Float, Cloud> entry : cloudTreeMap.entrySet()) {
             Float distanceRatio = entry.getKey();
             Cloud cloud = entry.getValue();

@@ -1,5 +1,9 @@
 package com.lop.game;
 
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenEquations;
+import aurelienribon.tweenengine.primitives.MutableFloat;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controllers;
@@ -18,7 +22,6 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
-
 public class GameScreen extends Stage implements Screen {
 	public MyGame game;
 
@@ -32,6 +35,7 @@ public class GameScreen extends Stage implements Screen {
 	private Background background;
 
 	private Sprite suspendedOverlaySprite;
+	private MutableFloat overlayY;
 	public boolean gamePaused = false;
 
 	private Array<Player> players;
@@ -40,11 +44,17 @@ public class GameScreen extends Stage implements Screen {
 	private Player winner;
 
 	Platform lastPlatform;
+	
+	private Sprite indicator;
+	private Sprite cross;
+	
 	public GameScreen(MyGame game) {
 		this.game = game;
 
 		suspendedOverlaySprite = game.spritesAtlas.createSprite("green_panel");
-
+		indicator = new Sprite(game.spritesAtlas.findRegion("grey_sliderDown"));
+		cross = new Sprite(game.spritesAtlas.findRegion("red_cross"));
+		
 		cam = new OrthographicCamera(30f * 1.35f, 30f);
 
 		PauseListener pauseListener = new PauseListener(this);
@@ -52,9 +62,12 @@ public class GameScreen extends Stage implements Screen {
 
 		ground = new Ground(game.spritesAtlas);
 		background = new Background();
+		
+		overlayY = new MutableFloat(300f);
 	}
 
 	public void init() {
+		overlayY.setValue(300f);
 		controllerListener = new GameControllerListener();
 		Controllers.addListener(controllerListener);
 
@@ -92,6 +105,8 @@ public class GameScreen extends Stage implements Screen {
 		initialGeneration();
 
 		background.initClouds(game.spritesAtlas);
+		
+		
 	}
 
 	public void createPlayer(int rank){
@@ -133,11 +148,11 @@ public class GameScreen extends Stage implements Screen {
         for(Body body : bodies){
 			if (!(body.getUserData() instanceof Player)) {
 				Vector2 pos = body.getWorldCenter();
-				if(pos.y < cam.position.y - cam.viewportHeight * 0.7f && body.getUserData() instanceof Platform){
+				if(pos.y < cam.position.y - cam.viewportHeight * 0.9f && body.getUserData() instanceof Platform){
 					world.destroyBody(body);
 					do{
 					lastPlatform = nextPlatform(lastPlatform);
-					} while(lastPlatform.getBody().getWorldCenter().y < cam.position.y + cam.viewportHeight * 0.7f);
+					} while(lastPlatform.getBody().getWorldCenter().y < cam.position.y + cam.viewportHeight * 0.9f);
 				}
 				if(body.getUserData() instanceof Renderable){
 					if (body.getUserData() instanceof Destroyable && ((Destroyable)body.getUserData()).toBeDestroy) {
@@ -150,6 +165,20 @@ public class GameScreen extends Stage implements Screen {
         }
 
 		for(Player player: players) {
+			Body body = player.getBody();
+			if(body.getPosition().y + player.getRadius() * 2 < game.gameScreen.cam.position.y - game.gameScreen.cam.viewportHeight * 0.5f){
+				game.batch.end();
+				game.pauseBatch.begin();
+					game.pauseBatch.draw(indicator, 
+							body.getPosition().x * Gdx.graphics.getWidth() / game.gameScreen.cam.viewportWidth + Gdx.graphics.getWidth() / 2 - indicator.getWidth() / 2, 
+							0);
+					game.pauseBatch.draw(player.getSprite(), body.getPosition().x * Gdx.graphics.getWidth() / game.gameScreen.cam.viewportWidth + Gdx.graphics.getWidth() / 2 - 10, 15, 20, 20);
+					if(player.isDead())
+						game.pauseBatch.draw(cross, body.getPosition().x * Gdx.graphics.getWidth() / game.gameScreen.cam.viewportWidth + Gdx.graphics.getWidth() / 2 - 10, 15, 20, 20);
+				game.pauseBatch.end();
+				game.batch.begin();
+			}
+			
 			player.render(game.batch);
 		}
 
@@ -165,6 +194,10 @@ public class GameScreen extends Stage implements Screen {
 			displayPauseOverlay();
 		}
 		//debugRenderer.render(world, cam.combined);
+	}
+	public void startOverlayAnim(){
+		overlayY.setValue(300f);
+		Tween.to(overlayY, 0, 1f).target(0).ease(TweenEquations.easeOutBounce).start(game.tweenManager);
 	}
 	public void verticalScrolling(){
 		Player higher = null;
@@ -196,10 +229,9 @@ public class GameScreen extends Stage implements Screen {
 	public void checkDie(){
 		for(Player player : players){
 			Vector2 pos = player.getBody().getPosition();
-			if(pos.y < cam.position.y - cam.viewportHeight * 0.7f && !player.isDead())
+			if(pos.y < cam.position.y - cam.viewportHeight * 0.9f && !player.isDead())
 			{
 				die(player);
-				players.removeValue(player, true);
 			}
 		}
 
@@ -207,10 +239,11 @@ public class GameScreen extends Stage implements Screen {
 		if (1 == alivePlayers.size) {
 			playerWin = true;
 			winner = players.first();
+			startOverlayAnim();
 		}
 	}
 	public void die(Player player){
-		world.destroyBody(player.getBody());
+		//world.destroyBody(player.getBody());
 		player.setDead(true);
 	}
 	public Platform createPlatform(float x, float y, float width, float height){
@@ -322,23 +355,30 @@ public class GameScreen extends Stage implements Screen {
 	}
 
 	public void displayPauseOverlay() {
-		displaySuspendedOverlay("Pause");
+		game.batch.end();
+		game.pauseBatch.begin();
+		displaySuspendedOverlay("Pause", 0);
+		game.pauseBatch.end();
+		game.batch.begin();
 	}
 
 	public void displayWinOverlay() {
-		displaySuspendedOverlay("Player " + (winner.rank + 1) + " win \\o/");
-	}
-
-	public void displaySuspendedOverlay(String message) {
 		game.batch.end();
 		game.pauseBatch.begin();
-		suspendedOverlaySprite.setPosition((Gdx.graphics.getWidth() / 2) - (suspendedOverlaySprite.getWidth() / 2), (Gdx.graphics.getHeight() / 2) - (suspendedOverlaySprite.getHeight() / 2));
+		displaySuspendedOverlay("Player " + (winner.rank + 1) + " win \\o/", -60);
+		game.pauseBatch.draw(winner.getSprite(), (Gdx.graphics.getWidth() / 2) - winner.getSprite().getWidth() / 2, (Gdx.graphics.getHeight() / 2) - winner.getSprite().getHeight() / 2 + 10 + overlayY.floatValue());
+		game.pauseBatch.end();
+		game.batch.begin();
+	}
+
+	public void displaySuspendedOverlay(String message, float offset) {
+		
+		suspendedOverlaySprite.setPosition((Gdx.graphics.getWidth() / 2) - (suspendedOverlaySprite.getWidth() / 2), (Gdx.graphics.getHeight() / 2) - (suspendedOverlaySprite.getHeight() / 2) + overlayY.floatValue());
 		suspendedOverlaySprite.setScale(2f);
 		suspendedOverlaySprite.draw(game.pauseBatch);
 		BitmapFont font = new BitmapFont();
-		font.draw(game.pauseBatch, message, Gdx.graphics.getWidth() / 2 - font.getBounds(message).width/2, Gdx.graphics.getHeight() / 2 + font.getBounds(message).height/2);
-		game.pauseBatch.end();
-		game.batch.begin();
+		font.draw(game.pauseBatch, message, Gdx.graphics.getWidth() / 2 - font.getBounds(message).width / 2f, Gdx.graphics.getHeight() / 2 + font.getBounds(message).height/2 + offset + overlayY.floatValue());
+		
 	}
 
 	public void restart() {
@@ -367,6 +407,7 @@ public class GameScreen extends Stage implements Screen {
 	public void pause() {
 		// TODO Auto-generated method stub
 		gamePaused = !gamePaused;
+		startOverlayAnim();
 	}
 
 	@Override
