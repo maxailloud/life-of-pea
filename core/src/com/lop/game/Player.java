@@ -1,10 +1,15 @@
 package com.lop.game;
 
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.primitives.MutableFloat;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
@@ -12,6 +17,7 @@ import com.badlogic.gdx.physics.box2d.Shape;
 
 public class Player implements Renderable{
 	private Sprite sprite;
+	private MutableFloat indicatorAlpha;
 	public int rank;
 	
 	private Body body;
@@ -25,6 +31,8 @@ public class Player implements Renderable{
 	private boolean canDash = false;
 	
 	private float initialMass;
+	
+	private Tween die; 
 	public Player(int rank, MyGame game, Body body){
 		this.body = body;
 		this.rank = rank;
@@ -44,8 +52,11 @@ public class Player implements Renderable{
 		case 4: 
 			path += "Yellow_round";
 			break;
+		case 5: 
+			path += "Beige_round";
+			break;
 		default :
-			path += "Yellow_round";
+			path += "Beige_round";
 			break;
 		}
 		AtlasRegion tex = game.spritesAtlas.findRegion(path);
@@ -68,8 +79,13 @@ public class Player implements Renderable{
 	public int getJumpCollisions() {
 		return jumpCollisions;
 	}
+	public float getRadius(){
+		return body.getFixtureList().get(0).getShape().getRadius();
+	}
 	@Override
 	public void render(SpriteBatch batch) {
+		Vector3 onScreen = game.gameScreen.cam.unproject(new Vector3(body.getPosition().x, body.getPosition().y, 0));
+		
 		if(Math.abs(body.getLinearVelocity().x) < 0.25f && body.getLinearVelocity().y > 0 &&  getJumpCollisions() == 1)
 			body.setLinearVelocity(0, 0);
 		for(Fixture fix : body.getFixtureList()){
@@ -78,14 +94,17 @@ public class Player implements Renderable{
 			float width = shape.getRadius() * 2;
 			float height = shape.getRadius() * 2;
 			batch.draw(sprite, body.getPosition().x - shape.getRadius(), body.getPosition().y - shape.getRadius(), width / 2f, height / 2f, width, height, 1f, 1f, sprite.getRotation());
+					
 		}
 	}
 	public boolean isDead() {
 		return dead;
 	}
+	
 	public void setDead(boolean dead) {
 		this.dead = dead;
 	}
+
 	public void scale(float scale) {
 		Fixture fix = body.getFixtureList().get(0);
 		CircleShape shape = (CircleShape)fix.getShape();

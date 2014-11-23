@@ -1,5 +1,7 @@
 package com.lop.game;
 
+import aurelienribon.tweenengine.TweenManager;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -17,8 +19,10 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 public class MyGame extends Game {
 	public TextureAtlas spritesAtlas;
 	private AssetManager manager;
+	public  TweenManager tweenManager;
+	
 	private Screen menuScreen;
-	public Screen gameScreen;
+	public GameScreen gameScreen;
 	private FPSLogger fpsLog;
 	private InputMultiplexer inputs;
 	SpriteBatch batch;
@@ -29,6 +33,7 @@ public class MyGame extends Game {
 
 	@Override
 	public void create () {
+		tweenManager = new TweenManager();
 		manager = new AssetManager();
 		fpsLog = new FPSLogger();
 		inputs = new InputMultiplexer();
@@ -49,6 +54,7 @@ public class MyGame extends Game {
 	}
 	@Override
 	public void render() {
+		tweenManager.update(Gdx.graphics.getDeltaTime());
 		Gdx.gl.glClearColor(163f/255f, 195f/255f, 235f/255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
