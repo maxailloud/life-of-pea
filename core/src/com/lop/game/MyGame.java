@@ -64,7 +64,7 @@ public class MyGame extends Game {
 		bonusSound = Gdx.audio.newSound(Gdx.files.internal("item_grab.wav"));
 		jumpSound = Gdx.audio.newSound(Gdx.files.internal("player_jump.wav"));
 		dashSound = Gdx.audio.newSound(Gdx.files.internal("player_dash.wav"));
-		victorySound = Gdx.audio.newSound(Gdx.files.internal("victory1.wav"));
+		victorySound = Gdx.audio.newSound(Gdx.files.internal("victory2.wav"));
 	}
 	@Override
 	public void render() {

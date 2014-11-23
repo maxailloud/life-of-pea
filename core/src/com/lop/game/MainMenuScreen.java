@@ -3,9 +3,17 @@ package com.lop.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -26,6 +34,9 @@ public class MainMenuScreen extends Stage implements Screen{
 	private Background background;
 	public OrthographicCamera camera;
 	public Array<Player> players;
+	
+	private Sprite titleSprite;
+	private Sprite gameDevSprite;
 	public Generator generator = new Generator();
 
 	public MainMenuScreen(Viewport viewport, MyGame myGame) {
@@ -45,7 +56,7 @@ public class MainMenuScreen extends Stage implements Screen{
         textButtonStyle.up = skin.getDrawable("green_button00");
         textButtonStyle.down = skin.getDrawable("green_button01");
         button = new TextButton("Play", textButtonStyle);
-		button.setCenterPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+		button.setCenterPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2 - 78);
 
 		button.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
@@ -53,8 +64,18 @@ public class MainMenuScreen extends Stage implements Screen{
 				start();
 			}
 		});
-
-//		game.font24.draw(game.pauseBatch, "Life Of Pea", 250f, 250f);
+		Texture titleTex = new Texture(Gdx.files.internal("life.png"));
+		titleTex.setFilter(TextureFilter.MipMapLinearNearest,
+				TextureFilter.Linear);
+		Gdx.gl20.glGenerateMipmap(GL20.GL_TEXTURE_2D);
+		Texture gameDevTex = new Texture(Gdx.files.internal("Logo_Game_Dev_Party.png"));
+		gameDevTex.setFilter(TextureFilter.MipMapLinearNearest,
+				TextureFilter.Linear);
+		
+		Gdx.gl20.glGenerateMipmap(GL20.GL_TEXTURE_2D);
+		
+		titleSprite = new Sprite(titleTex);
+		gameDevSprite = new Sprite(gameDevTex);
 
 		this.addActor(button);
 
@@ -63,7 +84,7 @@ public class MainMenuScreen extends Stage implements Screen{
 
 		world = new World(new Vector2(0, -90), true);
 
-		//Création du sol
+		//Creation du sol
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyDef.BodyType.KinematicBody;
 		bodyDef.position.set(0, 2);
@@ -108,6 +129,18 @@ public class MainMenuScreen extends Stage implements Screen{
 		}
 		game.batch.end();
 		this.draw();
+		game.pauseBatch.begin();
+			float width = 300;
+			float height = width * titleSprite.getHeight() / titleSprite.getWidth() ;
+			
+			game.pauseBatch.draw(titleSprite, Gdx.graphics.getWidth() / 2 - width / 2, Gdx.graphics.getHeight() * 0.75f - height / 2, width, height);
+		
+			width = 100;
+			height = width * gameDevSprite.getHeight() / gameDevSprite.getWidth() ;
+			game.pauseBatch.draw(gameDevSprite, 0, 10, width, height);
+		
+			
+		game.pauseBatch.end();
 		game.batch.begin();
 
 		world.step(delta, 6, 2);

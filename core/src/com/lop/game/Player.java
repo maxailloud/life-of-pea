@@ -118,7 +118,8 @@ public class Player implements Renderable{
 			body.applyLinearImpulse(axisValue * SPEED * 2f *  getMassRatio(), 50f *  getMassRatio(), body.getWorldCenter().x, body.getWorldCenter().y, true);
 		}
 	}
-	public void dash(float axisX, float axisY) {
+	public void dash(float axisX, float axisY, Sound dashSound) {
+		dashSound.play(0.5f);
 		Vector2 axis = new Vector2(axisX, -axisY);
 		Vector2 dash = new Vector2(50f *  getMassRatio(), 0).rotate(axis.angle()).scl(1f, 1f/3f);
 		if(canDash){

@@ -56,7 +56,7 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 			{
 				Player player = players.get(controllerIndex);
 				if(!player.isDead()){
-					player.dash(controller.getAxis(1), controller.getAxis(0));
+					player.dash(controller.getAxis(1), controller.getAxis(0), myGame.dashSound);
 				}
 				return true;
 			}
