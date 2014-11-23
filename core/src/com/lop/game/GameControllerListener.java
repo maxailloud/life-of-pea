@@ -131,7 +131,7 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 					Vector2 pointVel =
 							a.getLinearVelocityFromWorldPoint(contact.getWorldManifold().getPoints()[i]);
 					
-					if ( pointVel.y < 0  || a.getPosition().y >= b.getPosition().y + vertex0.y)
+					if (a.getPosition().y >= b.getPosition().y + vertex0.y)
 						return;//point is moving down, leave contact solid and exit
 				}
 
@@ -152,7 +152,7 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 					Vector2 pointVel =
 							b.getLinearVelocityFromWorldPoint(contact.getWorldManifold().getPoints()[i]);
 					
-					if ( pointVel.y < 0  || b.getPosition().y >= a.getPosition().y + vertex0.y)
+					if (b.getPosition().y >= a.getPosition().y + vertex0.y)
 						return;//point is moving down, leave contact solid and exit
 				}
 
