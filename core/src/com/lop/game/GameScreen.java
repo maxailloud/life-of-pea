@@ -143,7 +143,7 @@ public class GameScreen extends Stage implements Screen {
 		else if (!gamePaused) {
 			world.step(delta, 6, 2);
 			verticalScrolling();
-//			checkDie();
+			checkDie();
 		}
 		else {
 			displayPauseOverlay();
