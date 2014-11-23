@@ -94,7 +94,7 @@ public class MainMenuScreen extends Stage implements Screen{
 
 		players = new Array<>();
 		for(int i = 0; i < Controllers.getControllers().size; i++){
-			generator.createPlayer(i, world, game, null, players);
+			generator.createPlayer(Controllers.getControllers().size, i, world, game, null, players);
 		}
 	}
 
