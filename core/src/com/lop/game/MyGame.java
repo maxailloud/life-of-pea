@@ -5,7 +5,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -29,7 +28,8 @@ public class MyGame extends Game {
 	public Sound gameSound;
 	public Sound clickSound;
 
-    public BitmapFont font;
+    public BitmapFont font12;
+    public BitmapFont font24;
 
 	@Override
 	public void create () {
@@ -44,8 +44,10 @@ public class MyGame extends Game {
 
 		FreeTypeFontGenerator freeTypeFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("kenvector_future.ttf"));
 		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		parameter.size = 12;
+		font12 = freeTypeFontGenerator.generateFont(parameter);
 		parameter.size = 24;
-		font = freeTypeFontGenerator.generateFont(parameter);
+		font24 = freeTypeFontGenerator.generateFont(parameter);
 		freeTypeFontGenerator.dispose();
 		
 		menuScreen = new MainMenuScreen(new ScreenViewport(), this);

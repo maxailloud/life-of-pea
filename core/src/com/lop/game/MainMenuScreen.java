@@ -41,7 +41,7 @@ public class MainMenuScreen extends Stage implements Screen{
         skin = new Skin();
         skin.addRegions(game.spritesAtlas);
         textButtonStyle = new TextButtonStyle();
-		textButtonStyle.font = myGame.font;
+		textButtonStyle.font = myGame.font24;
         textButtonStyle.up = skin.getDrawable("green_button00");
         textButtonStyle.down = skin.getDrawable("green_button01");
         button = new TextButton("Play", textButtonStyle);
