@@ -1,61 +1,48 @@
 package com.lop.game;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.Array;
+
+import java.util.Map;
+import java.util.TreeMap;
 
 public class Background {
-	private Array<Cloud> group1 = new Array<Cloud>();
-	private Array<Cloud> group2 = new Array<Cloud>();
-	private Array<Cloud> group3 = new Array<Cloud>();
+	private TreeMap<Float, Cloud> cloudTreeMap = new TreeMap<Float, Cloud>();
 
     public Background(TextureAtlas spriteAtlas) {
         Sprite groundSprite = spriteAtlas.createSprite("slice03");
 
-        for (int i = 0; i < MathUtils.random(1, 10); i++) {
-            Cloud cloud1 = new Cloud(spriteAtlas.createSprite("cloud1"));
-            cloud1.sprite.setPosition(MathUtils.random(0f, 864f), MathUtils.random(250f, 640f));
-            cloud1.sprite.setSize(129f, 71f);
-            cloud1.sprite.setScale(0.2f);
-            group1.add(cloud1);
-        }
-        for (int i = 0; i < MathUtils.random(1, 10); i++) {
-            Cloud cloud2 = new Cloud(spriteAtlas.createSprite("cloud2"));
-            cloud2.sprite.setPosition(MathUtils.random(0f, 864f), MathUtils.random(250f, 640f));
-            cloud2.sprite.setSize(129f, 71f);
-            cloud2.sprite.setScale(0.6f);
-            group2.add(cloud2);
-        }
-        for (int i = 0; i < MathUtils.random(1, 10); i++) {
-            Cloud cloud3 = new Cloud(spriteAtlas.createSprite("cloud3"));
-            cloud3.sprite.setPosition(MathUtils.random(0f, 864f), MathUtils.random(250f, 640f));
-            cloud3.sprite.setSize(129f, 71f);
-            cloud3.sprite.setScale(0.8f);
-            group3.add(cloud3);
+        for (int i = 0; i < 20; i++) {
+            Cloud cloud = new Cloud(spriteAtlas.createSprite("cloud" + MathUtils.random(1, 3)));
+            cloud.sprite.setSize(129f, 71f);
+            initCloud(cloud, i);
+            cloudTreeMap.put(cloud.distanceRatio, cloud);
         }
     }
 
-    public void render(SpriteBatch spriteBatch, GameScreen gameScreen) {
+    public void initCloud(Cloud cloud, int index) {
+        cloud.distanceRatio = MathUtils.random(0.2f, 1.4f);
+        cloud.sprite.setPosition(
+                MathUtils.random(0f + cloud.sprite.getWidth() / 2,
+                        864f - cloud.sprite.getHeight() / 2), MathUtils.random(150f, 840f) + (10 * cloud.distanceRatio)
+        );
+        cloud.sprite.setScale(cloud.distanceRatio);
+    }
+
+    public void render(GameScreen gameScreen) {
         gameScreen.game.batch.end();
         gameScreen.game.pauseBatch.begin();
-        Sprite sprite = new Sprite();
 
-        for (int i = 0; i < group1.size; i++) {
-            Cloud cloud = group1.get(i);
-            sprite = cloud.sprite;
-            spriteBatch.draw(sprite, sprite.getX(), sprite.getY() - (gameScreen.cam.position.y * 0.9f));
-        }
-        for (int i = 0; i < group2.size; i++) {
-            Cloud cloud = group2.get(i);
-            sprite = cloud.sprite;
-            spriteBatch.draw(sprite, sprite.getX(), sprite.getY() - (gameScreen.cam.position.y * 1.1f));
-        }
-        for (int i = 0; i < group3.size; i++) {
-            Cloud cloud = group3.get(i);
-            sprite = cloud.sprite;
-            spriteBatch.draw(sprite, sprite.getX(), sprite.getY() - (gameScreen.cam.position.y * 1.3f));
+        for(Map.Entry<Float, Cloud> entry : cloudTreeMap.entrySet()) {
+            Float distanceRatio = entry.getKey();
+            Cloud cloud = entry.getValue();
+
+            float yDelta = (gameScreen.cam.position.y * (distanceRatio * 2));
+            cloud.sprite.setY(cloud.sprite.getY() - yDelta);
+            cloud.sprite.draw(gameScreen.game.pauseBatch);
+
+            cloud.sprite.setY(cloud.sprite.getY() + yDelta);
         }
         gameScreen.game.pauseBatch.end();
         gameScreen.game.batch.begin();
