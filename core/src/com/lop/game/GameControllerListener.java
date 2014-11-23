@@ -17,9 +17,11 @@ import com.badlogic.gdx.physics.box2d.Shape;
 
 public class GameControllerListener extends ControllerAdapter implements ContactListener{
 	private List<Player> players;
+	public MyGame myGame;
 
-	public GameControllerListener() {
-		players = new ArrayList<Player>();
+	public GameControllerListener(MyGame myGame) {
+		players = new ArrayList<>();
+		this.myGame = myGame;
 	}
 	@Override
 	public boolean axisMoved(Controller controller, int axisIndex, float value) {
@@ -45,8 +47,7 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 		{
 			Player player = players.get(controllerIndex);
 			if(!player.isDead()){
-				player.jump(controller.getAxis(1));
-				
+				player.jump(controller.getAxis(1), myGame.jumpSound);
 			}
 			return true;
 		}
@@ -79,11 +80,10 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 		}
 
 		if (null != bonus) {
-
+			myGame.bonusSound.play();
 			bonus.bonus(player);
 
 		}
-		player = null;
 		if(a.getUserData() instanceof Player){
 			player = (Player)a.getUserData();
 			if(contact.isTouching() && checkJumpCollision(a, b))

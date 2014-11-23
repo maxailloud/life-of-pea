@@ -1,41 +1,42 @@
 package com.lop.game;
 
 import aurelienribon.tweenengine.TweenManager;
-
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class MyGame extends Game {
 	public TextureAtlas spritesAtlas;
-	private AssetManager manager;
 	public  TweenManager tweenManager;
 	
 	private Screen menuScreen;
 	public GameScreen gameScreen;
-	private FPSLogger fpsLog;
 	private InputMultiplexer inputs;
 	SpriteBatch batch;
 	SpriteBatch pauseBatch;
 
 	public Sound gameSound;
 	public Sound clickSound;
+	public Sound bonusSound;
+	public Sound jumpSound;
+	public Sound dashSound;
+
+    public BitmapFont font12;
+    public BitmapFont font24;
 
 	@Override
 	public void create () {
 		tweenManager = new TweenManager();
-		manager = new AssetManager();
-		fpsLog = new FPSLogger();
 		inputs = new InputMultiplexer();
 		spritesAtlas = new TextureAtlas(Gdx.files.internal("spritesheet.atlas"));
 		for(Texture tex : spritesAtlas.getTextures().iterator()){
@@ -43,6 +44,14 @@ public class MyGame extends Game {
 					TextureFilter.Linear);
 		}
 		Gdx.gl20.glGenerateMipmap(GL20.GL_TEXTURE_2D);
+
+		FreeTypeFontGenerator freeTypeFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("kenvector_future.ttf"));
+		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		parameter.size = 12;
+		font12 = freeTypeFontGenerator.generateFont(parameter);
+		parameter.size = 24;
+		font24 = freeTypeFontGenerator.generateFont(parameter);
+		freeTypeFontGenerator.dispose();
 		
 		menuScreen = new MainMenuScreen(new ScreenViewport(), this);
 		gameScreen = new GameScreen(this);
@@ -51,6 +60,9 @@ public class MyGame extends Game {
 		pauseBatch = new SpriteBatch();
 		gameSound = Gdx.audio.newSound(Gdx.files.internal("SmashRunner.mp3"));
 		clickSound = Gdx.audio.newSound(Gdx.files.internal("click.ogg"));
+		bonusSound = Gdx.audio.newSound(Gdx.files.internal("item_grab.wav"));
+		jumpSound = Gdx.audio.newSound(Gdx.files.internal("player_jump.wav"));
+		dashSound = Gdx.audio.newSound(Gdx.files.internal("player_dash.wav"));
 	}
 	@Override
 	public void render() {
@@ -64,8 +76,5 @@ public class MyGame extends Game {
 
 	public InputMultiplexer getInputs() {
 		return inputs;
-	}
-	public AssetManager getAssetManager(){
-		return manager;
 	}
 }

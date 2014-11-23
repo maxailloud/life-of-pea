@@ -3,23 +3,15 @@ package com.lop.game;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenEquations;
 import aurelienribon.tweenengine.primitives.MutableFloat;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.EdgeShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 public class GameScreen extends Stage implements Screen {
@@ -71,7 +63,7 @@ public class GameScreen extends Stage implements Screen {
 
 	public void init() {
 		overlayY.setValue(300f);
-		controllerListener = new GameControllerListener();
+		controllerListener = new GameControllerListener(game);
 		Controllers.addListener(controllerListener);
 
 		world = new World(new Vector2(0, -90), true);
@@ -320,7 +312,7 @@ public class GameScreen extends Stage implements Screen {
 	public void displayWinOverlay() {
 		game.batch.end();
 		game.pauseBatch.begin();
-		displaySuspendedOverlay("Player " + (winner.rank + 1) + " win \\o/", -60);
+		displaySuspendedOverlay("Player " + (winner.rank + 1) + " win !!!", -60);
 		game.pauseBatch.draw(winner.getSprite(), (Gdx.graphics.getWidth() / 2) - winner.getSprite().getWidth() / 2, (Gdx.graphics.getHeight() / 2) - winner.getSprite().getHeight() / 2 + 10 + overlayY.floatValue());
 		game.pauseBatch.end();
 		game.batch.begin();
@@ -331,8 +323,7 @@ public class GameScreen extends Stage implements Screen {
 		suspendedOverlaySprite.setPosition((Gdx.graphics.getWidth() / 2) - (suspendedOverlaySprite.getWidth() / 2), (Gdx.graphics.getHeight() / 2) - (suspendedOverlaySprite.getHeight() / 2) + overlayY.floatValue());
 		suspendedOverlaySprite.setScale(2f);
 		suspendedOverlaySprite.draw(game.pauseBatch);
-		BitmapFont font = new BitmapFont();
-		font.draw(game.pauseBatch, message, Gdx.graphics.getWidth() / 2 - font.getBounds(message).width / 2f, Gdx.graphics.getHeight() / 2 + font.getBounds(message).height/2 + offset + overlayY.floatValue());
+		game.font12.draw(game.pauseBatch, message, Gdx.graphics.getWidth() / 2 - game.font12.getBounds(message).width / 2f, Gdx.graphics.getHeight() / 2 + game.font12.getBounds(message).height/2 + offset + overlayY.floatValue());
 		
 	}
 

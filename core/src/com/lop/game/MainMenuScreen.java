@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -20,7 +19,6 @@ public class MainMenuScreen extends Stage implements Screen{
 	private MyGame game;
 	public TextButton button;
     public TextButtonStyle textButtonStyle;
-    public BitmapFont font;
     public Skin skin;
 	private MenuListener menuListener;
 	private World world;
@@ -40,12 +38,10 @@ public class MainMenuScreen extends Stage implements Screen{
 
 		game.clickSound = Gdx.audio.newSound(Gdx.files.internal("click.ogg"));
 
-		font = new BitmapFont();
-		font.scale(0.5F);
         skin = new Skin();
         skin.addRegions(game.spritesAtlas);
         textButtonStyle = new TextButtonStyle();
-        textButtonStyle.font = font;
+		textButtonStyle.font = myGame.font24;
         textButtonStyle.up = skin.getDrawable("green_button00");
         textButtonStyle.down = skin.getDrawable("green_button01");
         button = new TextButton("Play", textButtonStyle);
@@ -54,8 +50,6 @@ public class MainMenuScreen extends Stage implements Screen{
 		button.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				game.clickSound.play();
-				game.gameSound.stop();
-				game.gameSound.loop();
 				start();
 			}
 		});
@@ -156,6 +150,8 @@ public class MainMenuScreen extends Stage implements Screen{
 		Controllers.removeListener(menuListener);
 		this.getActors().removeValue(button, true);
 		game.setScreen(game.gameScreen);
+		game.gameSound.stop();
+		game.gameSound.loop();
 	}
 
 }
