@@ -1,15 +1,10 @@
 package com.lop.game;
 
-import aurelienribon.tweenengine.Tween;
-import aurelienribon.tweenengine.primitives.MutableFloat;
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
@@ -17,7 +12,6 @@ import com.badlogic.gdx.physics.box2d.Shape;
 
 public class Player implements Renderable{
 	private Sprite sprite;
-	private MutableFloat indicatorAlpha;
 	public int rank;
 	
 	private Body body;
@@ -32,7 +26,6 @@ public class Player implements Renderable{
 	
 	private float initialMass;
 	
-	private Tween die; 
 	public Player(int rank, MyGame game, Body body){
 		this.body = body;
 		this.rank = rank;
@@ -84,8 +77,6 @@ public class Player implements Renderable{
 	}
 	@Override
 	public void render(SpriteBatch batch) {
-		Vector3 onScreen = game.gameScreen.cam.unproject(new Vector3(body.getPosition().x, body.getPosition().y, 0));
-		
 		if(Math.abs(body.getLinearVelocity().x) < 0.25f && body.getLinearVelocity().y > 0 &&  getJumpCollisions() == 1)
 			body.setLinearVelocity(0, 0);
 		for(Fixture fix : body.getFixtureList()){
@@ -132,5 +123,9 @@ public class Player implements Renderable{
 	}
 	private float getMassRatio(){
 		return body.getMass() / initialMass;
+	}
+
+	public Sprite getSprite() {
+		return sprite;
 	}
 }
