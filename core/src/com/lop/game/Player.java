@@ -111,9 +111,9 @@ public class Player implements Renderable{
 		CircleShape shape = (CircleShape)fix.getShape();
 		shape.setRadius(shape.getRadius() * scale);
 	}
-	public void jump(float axisValue) {
+	public void jump(float axisValue, Sound jumpSound) {
 		if(getJumpCollisions() > 0){
-			body.setLinearDamping(1f);
+			jumpSound.play();
 			
 			body.applyLinearImpulse(axisValue * SPEED * 2f *  getMassRatio(), 50f *  getMassRatio(), body.getWorldCenter().x, body.getWorldCenter().y, true);
 		}
