@@ -8,14 +8,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.EdgeShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 
@@ -40,6 +34,9 @@ public class GameScreen extends Stage implements Screen {
 	private Player winner;
 
 	Platform lastPlatform;
+
+	Generator generator = new Generator();
+
 	public GameScreen(MyGame game) {
 		this.game = game;
 
@@ -87,38 +84,11 @@ public class GameScreen extends Stage implements Screen {
 		cam.update();
 
 		for(int i = 0; i < Controllers.getControllers().size; i++){
-			createPlayer(i);
+			generator.createPlayer(i, world, game, controllerListener, players);
 		}
 		initialGeneration();
 
 		background.initClouds(game.spritesAtlas);
-	}
-
-	public void createPlayer(int rank){
-		
-		// First we create a body definition
-		BodyDef bodyDef = new BodyDef();
-		bodyDef.type = BodyType.DynamicBody;
-		bodyDef.position.set(5 * rank - 5, 2);
-
-		Body body = world.createBody(bodyDef);
-		Player player = new Player(rank, game, body);
-		controllerListener.addPlayer(player);
-		players.add(player);
-		body.setUserData(player);
-
-		CircleShape circle = new CircleShape();
-		circle.setRadius(1f);
-
-		FixtureDef fixtureDef = new FixtureDef();
-		fixtureDef.shape = circle;
-		fixtureDef.density = 3.5f; 
-		fixtureDef.friction = 10.4f;
-		fixtureDef.restitution = 0.01f;
-		
-		body.createFixture(fixtureDef);
-
-		circle.dispose();
 	}
 
 	@Override
