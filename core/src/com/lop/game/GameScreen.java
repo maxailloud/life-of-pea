@@ -51,7 +51,7 @@ public class GameScreen extends Stage implements Screen {
 		Controllers.addListener(pauseListener);
 
 		ground = new Ground(game.spritesAtlas);
-		background = new Background(game.spritesAtlas);
+		background = new Background();
 	}
 
 	public void init() {
@@ -90,6 +90,8 @@ public class GameScreen extends Stage implements Screen {
 			createPlayer(i);
 		}
 		initialGeneration();
+
+		background.initClouds(game.spritesAtlas);
 	}
 
 	public void createPlayer(int rank){
@@ -155,7 +157,7 @@ public class GameScreen extends Stage implements Screen {
 		else if (!gamePaused) {
 			world.step(delta, 6, 2);
 			verticalScrolling();
-//			checkDie();
+			checkDie();
 		}
 		else {
 			displayPauseOverlay();
@@ -273,7 +275,6 @@ public class GameScreen extends Stage implements Screen {
 	public Vector2 randomNewPos(Vector2 position)
 	{
 		float angle = MathUtils.random(30f, 70f) * (float)(((MathUtils.random(0, 1) * 2) -1)) + 90f;
-		System.out.println(angle);
 		Vector2 translation = new Vector2(Vector2.X).rotate(angle).scl((float) (MathUtils.random(4f, 6f) * (1f + (Math.sin((90f - angle) * MathUtils.degRad) + 1f) / 5f)));
 		return position.add(translation).sub(new Vector2(3, 1));
 	}
