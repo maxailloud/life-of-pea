@@ -1,12 +1,10 @@
 package com.lop.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
@@ -22,6 +20,12 @@ public class Player implements Renderable{
 	private int jumpCollisions;
 	
 	private boolean dead;
+	
+	public final float SPEED = 10.0f;
+	
+	private boolean canDash = false;
+	
+	private float initialMass;
 	public Player(int rank, MyGame game, Body body){
 		this.body = body;
 		this.game = game;
@@ -50,6 +54,8 @@ public class Player implements Renderable{
 		sprite = new Sprite(tex);
 		
 		setDead(false);
+		
+		initialMass = body.getMass();
 	}
 	public Sprite getSprite(){
 		return sprite;
@@ -59,6 +65,7 @@ public class Player implements Renderable{
 	}
 	public void incrementJumpCollisions(){
 		jumpCollisions = 1;
+		canDash = true;
 	}
 	public void decrementJumpCollisions(){
 		jumpCollisions = 0;
@@ -72,7 +79,6 @@ public class Player implements Renderable{
 			body.setLinearVelocity(0, 0);
 		for(Fixture fix : body.getFixtureList()){
 			Shape shape = fix.getShape();
-			System.out.println(body.getAngle());
 			sprite.setRotation(body.getAngle() * MathUtils.radDeg);
 			float width = shape.getRadius() * 2;
 			float height = shape.getRadius() * 2;
@@ -91,5 +97,28 @@ public class Player implements Renderable{
 		CircleShape shape = (CircleShape)fix.getShape();
 		shape.setRadius(shape.getRadius() * scale);
 	}
-
+	public void jump(float axisValue) {
+		if(getJumpCollisions() > 0){
+			body.setLinearDamping(1f);
+			body.applyLinearImpulse(axisValue * SPEED * 2f *  getMassRatio(), 50f *  getMassRatio(), body.getWorldCenter().x, body.getWorldCenter().y, true);
+		}
+	}
+	public void dash(float axisX, float axisY) {
+		Vector2 axis = new Vector2(axisX, -axisY);
+		if(canDash){
+			canDash = false;
+			body.setLinearDamping(1f);
+			body.applyLinearImpulse(axis.scl(50f *  getMassRatio()), body.getWorldCenter(), true);
+		
+		}
+	}
+	public void move(float value) {
+		body.applyLinearImpulse(value * SPEED * 5 *  getMassRatio(), 0, body.getWorldCenter().x, body.getWorldCenter().y, true);
+		if(Math.abs(body.getLinearVelocity().x) > SPEED)
+			body.setLinearVelocity(Math.signum(body.getLinearVelocity().x) * SPEED, body.getLinearVelocity().y);
+		
+	}
+	private float getMassRatio(){
+		return body.getMass() / initialMass;
+	}
 }

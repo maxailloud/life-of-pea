@@ -86,7 +86,7 @@ public class GameScreen extends Stage implements Screen {
 		cam.position.y = cam.viewportHeight / 2;
 		cam.update();
 
-		for(int i = 0; i < Controllers.getControllers().size; i++){
+		for(int i = 0; i < Controllers.getControllers().size + 1; i++){
 			createPlayer(i);
 		}
 		initialGeneration();
@@ -149,7 +149,7 @@ public class GameScreen extends Stage implements Screen {
 		else if (!gamePaused) {
 			world.step(delta, 6, 2);
 			verticalScrolling();
-			checkDie();
+//			checkDie();
 		}
 		else {
 			displayPauseOverlay();
@@ -270,10 +270,9 @@ public class GameScreen extends Stage implements Screen {
 	}
 	public Vector2 randomNewPos(Vector2 position)
 	{
-		float angle = MathUtils.random(-70f, -40f) * (float)(((MathUtils.random(0, 1)+ 1) -1)) + 90f;
-		
+		float angle = MathUtils.random(30f, 70f) * (float)(((MathUtils.random(0, 1) * 2) -1)) + 90f;
+		System.out.println(angle);
 		Vector2 translation = new Vector2(Vector2.X).rotate(angle).scl((float) (MathUtils.random(4f, 6f) * (1f + (Math.sin((90f - angle) * MathUtils.degRad) + 1f) / 5f)));
-		
 		
 		
 		Vector2 newPos = position.add(translation).sub(new Vector2(3, 1));

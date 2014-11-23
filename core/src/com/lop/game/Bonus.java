@@ -26,10 +26,12 @@ public class Bonus extends Destroyable implements Renderable {
 		    	
 				fix.setDensity(fix.getDensity() * 2);
 				player.scale(1.01f);
+				player.getBody().resetMassData();
 				break;
     		case "starSilver":
 		    	fix.setDensity(fix.getDensity() * 10);
 				player.scale(1.01f);
+				player.getBody().resetMassData();
 				break;
 	    
     	
