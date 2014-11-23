@@ -1,6 +1,7 @@
 package com.lop.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 
@@ -32,26 +33,26 @@ public class Background {
         cloud.sprite.setScale(cloud.distanceRatio);
     }
 
-    public void render(GameScreen gameScreen) {
-        gameScreen.game.batch.end();
-        gameScreen.game.pauseBatch.begin();
-        
+    public void render(SpriteBatch gameBatch, SpriteBatch pauseBatch, float y) {
+        gameBatch.end();
+        pauseBatch.begin();
+
         for(Map.Entry<Float, Cloud> entry : cloudTreeMap.entrySet()) {
             Float distanceRatio = entry.getKey();
             Cloud cloud = entry.getValue();
 
-            float yDelta = (gameScreen.cam.position.y * (distanceRatio * 2));
+            float yDelta = (y * (distanceRatio * 2));
             cloud.sprite.setY(cloud.sprite.getY() - yDelta);
-            cloud.sprite.draw(gameScreen.game.pauseBatch);
+            cloud.sprite.draw(pauseBatch);
 
             if(0 > cloud.sprite.getY() + cloud.sprite.getHeight()){
                 initCloud(cloud);
-                cloud.sprite.setY(gameScreen.cam.position.y + Gdx.graphics.getHeight() + (10 * cloud.distanceRatio) + yDelta);
+                cloud.sprite.setY(y + Gdx.graphics.getHeight() + (10 * cloud.distanceRatio) + yDelta);
             } else {
                 cloud.sprite.setY(cloud.sprite.getY() + yDelta);
             }
         }
-        gameScreen.game.pauseBatch.end();
-        gameScreen.game.batch.begin();
+        pauseBatch.end();
+        gameBatch.begin();
     }
 }

@@ -3,7 +3,10 @@ package com.lop.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -19,6 +22,10 @@ public class MainMenuScreen extends Stage implements Screen{
     public BitmapFont font;
     public Skin skin;
 	private MenuListener menuListener;
+	private World world;
+	private Ground ground;
+	private Background background;
+	public OrthographicCamera camera;
 
 	public MainMenuScreen(Viewport viewport, MyGame myGame) {
 		super(viewport);
@@ -54,12 +61,27 @@ public class MainMenuScreen extends Stage implements Screen{
 
 		menuListener = new MenuListener(this);
 		Controllers.addListener(menuListener);
+
+		world = new World(new Vector2(0, -90), true);
+
+		ground = new Ground(game.spritesAtlas);
+		background = new Background();
+		background.initClouds(game.spritesAtlas);
+
+		camera = new OrthographicCamera(30f * 1.35f, 30f);
+		camera.position.y = camera.viewportHeight / 2;
+		camera.update();
 	}
 
 	@Override
 	public void render(float delta) {
+		game.batch.setProjectionMatrix(camera.combined);
 		this.act(delta);
+		ground.render(game.batch);
+		background.render(game.batch, game.pauseBatch, 0);
 		this.draw();
+
+		world.step(delta, 6, 2);
 	}
 
 	@Override
@@ -70,26 +92,26 @@ public class MainMenuScreen extends Stage implements Screen{
 
 	@Override
 	public void show() {
-		
-		
+
+
 	}
 
 	@Override
 	public void hide() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void resume() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

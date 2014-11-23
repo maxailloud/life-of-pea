@@ -48,6 +48,9 @@ public class GameScreen extends Stage implements Screen {
 	private Sprite indicator;
 	private Sprite cross;
 	
+
+	Generator generator = new Generator();
+
 	public GameScreen(MyGame game) {
 		this.game = game;
 
@@ -100,40 +103,13 @@ public class GameScreen extends Stage implements Screen {
 		cam.update();
 
 		for(int i = 0; i < Controllers.getControllers().size; i++){
-			createPlayer(i);
+			generator.createPlayer(i, world, game, controllerListener, players);
 		}
 		initialGeneration();
 
 		background.initClouds(game.spritesAtlas);
 		
 		
-	}
-
-	public void createPlayer(int rank){
-		
-		// First we create a body definition
-		BodyDef bodyDef = new BodyDef();
-		bodyDef.type = BodyType.DynamicBody;
-		bodyDef.position.set(5 * rank - 5, 2);
-
-		Body body = world.createBody(bodyDef);
-		Player player = new Player(rank, game, body);
-		controllerListener.addPlayer(player);
-		players.add(player);
-		body.setUserData(player);
-
-		CircleShape circle = new CircleShape();
-		circle.setRadius(1f);
-
-		FixtureDef fixtureDef = new FixtureDef();
-		fixtureDef.shape = circle;
-		fixtureDef.density = 3.5f; 
-		fixtureDef.friction = 10.4f;
-		fixtureDef.restitution = 0.01f;
-		
-		body.createFixture(fixtureDef);
-
-		circle.dispose();
 	}
 
 	@Override
@@ -143,7 +119,7 @@ public class GameScreen extends Stage implements Screen {
         world.getBodies(bodies);
 
 		ground.render(game.batch);
-		background.render(this);
+		background.render(game.batch, game.pauseBatch, cam.position.y);
 
         for(Body body : bodies){
 			if (!(body.getUserData() instanceof Player)) {
@@ -247,30 +223,7 @@ public class GameScreen extends Stage implements Screen {
 		player.setDead(true);
 	}
 	public Platform createPlatform(float x, float y, float width, float height){
-		// First we create a body definition
-		BodyDef bodyDef = new BodyDef();
-		bodyDef.position.set(x, y);
-		bodyDef.type = BodyType.KinematicBody;
-
-		Body body = world.createBody(bodyDef);
-		body.setLinearDamping(1f);
-		PolygonShape rectangle = new PolygonShape();
-		rectangle.set(new float[]{0, 0,
-			width, 0,
-			width, height,
-			0, height
-			
-			
-		});
-
-		FixtureDef fixtureDef = new FixtureDef();
-		fixtureDef.shape = rectangle;
-		fixtureDef.friction = 0.5f;
-		body.createFixture(fixtureDef);
-		Platform platform = new Platform(body, game);
-		body.setUserData(platform);
-		
-		rectangle.dispose();
+		Platform platform = generator.createPlatform(x, y, width, height, world, game);
 
 		createBonus(platform);
 		return platform;

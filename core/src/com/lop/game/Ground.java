@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 
 public class Ground {
-    private Array<Sprite> groundSprites = new Array<Sprite>();
+    private Array<Sprite> groundSprites = new Array<>();
 	private Sprite littleBushSprite;
 	private Sprite bigBushSprite;
 
