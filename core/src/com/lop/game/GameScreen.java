@@ -120,7 +120,7 @@ public class GameScreen extends Stage implements Screen {
         world.getBodies(bodies);
 
 		ground.render(game.batch);
-		background.render(game.pauseBatch, this);
+		background.render(this);
 
         for(Body body : bodies){
         	Vector2 pos = body.getWorldCenter();
@@ -313,7 +313,7 @@ public class GameScreen extends Stage implements Screen {
 	}
 
 	public void displayWinOverlay() {
-		displaySuspendedOverlay("Joueur " + (winner.rank + 1) + " a gagné");
+		displaySuspendedOverlay("Player " + (winner.rank + 1) + " win \\o/");
 	}
 
 	public void displaySuspendedOverlay(String message) {
