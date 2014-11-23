@@ -133,7 +133,9 @@ public class GameScreen extends Stage implements Screen {
 				Vector2 pos = body.getWorldCenter();
 				if(pos.y < cam.position.y - cam.viewportHeight * 0.7f && body.getUserData() instanceof Platform){
 					world.destroyBody(body);
+					do{
 					lastPlatform = nextPlatform(lastPlatform);
+					} while(lastPlatform.getBody().getWorldCenter().y < cam.position.y + cam.viewportHeight * 0.7f);
 				}
 				if(body.getUserData() instanceof Renderable){
 					if (body.getUserData() instanceof Destroyable && ((Destroyable)body.getUserData()).toBeDestroy) {
