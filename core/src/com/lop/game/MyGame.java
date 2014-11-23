@@ -27,6 +27,9 @@ public class MyGame extends Game {
 
 	public Sound gameSound;
 	public Sound clickSound;
+	public Sound bonusSound;
+	public Sound jumpSound;
+	public Sound dashSound;
 
     public BitmapFont font12;
     public BitmapFont font24;
@@ -57,6 +60,9 @@ public class MyGame extends Game {
 		pauseBatch = new SpriteBatch();
 		gameSound = Gdx.audio.newSound(Gdx.files.internal("SmashRunner.mp3"));
 		clickSound = Gdx.audio.newSound(Gdx.files.internal("click.ogg"));
+		bonusSound = Gdx.audio.newSound(Gdx.files.internal("item_grab.wav"));
+		jumpSound = Gdx.audio.newSound(Gdx.files.internal("player_jump.wav"));
+		dashSound = Gdx.audio.newSound(Gdx.files.internal("player_dash.wav"));
 	}
 	@Override
 	public void render() {

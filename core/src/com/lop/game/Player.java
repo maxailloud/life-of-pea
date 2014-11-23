@@ -1,5 +1,6 @@
 package com.lop.game;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -101,8 +102,9 @@ public class Player implements Renderable{
 		CircleShape shape = (CircleShape)fix.getShape();
 		shape.setRadius(shape.getRadius() * scale);
 	}
-	public void jump(float axisValue) {
+	public void jump(float axisValue, Sound jumpSound) {
 		if(getJumpCollisions() > 0){
+			jumpSound.play();
 			body.setLinearDamping(1f);
 			
 			Vector2 jump = (new Vector2( 50f *  getMassRatio(), 0).rotate(new Vector2(axisValue, 1f).angle()));

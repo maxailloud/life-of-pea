@@ -63,7 +63,7 @@ public class GameScreen extends Stage implements Screen {
 
 	public void init() {
 		overlayY.setValue(300f);
-		controllerListener = new GameControllerListener();
+		controllerListener = new GameControllerListener(game);
 		Controllers.addListener(controllerListener);
 
 		world = new World(new Vector2(0, -90), true);
@@ -94,7 +94,7 @@ public class GameScreen extends Stage implements Screen {
 		cam.position.y = cam.viewportHeight / 2;
 		cam.update();
 
-		for(int i = 0; i < Controllers.getControllers().size; i++){
+		for(int i = 0; i < Controllers.getControllers().size + 1; i++){
 			generator.createPlayer(Controllers.getControllers().size, i, world, game, controllerListener, players);
 		}
 		initialGeneration();
