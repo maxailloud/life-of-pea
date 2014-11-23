@@ -17,6 +17,8 @@ public class PauseListener extends ControllerAdapter {
 			} else {
 				gameScreen.restart();
 			}
+		} else if (gameScreen.gamePaused && buttonIndex == 0) {
+			gameScreen.restart();
 		}
 		return true;
 	}

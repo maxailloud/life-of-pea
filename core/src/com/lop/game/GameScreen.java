@@ -32,7 +32,7 @@ public class GameScreen extends Stage implements Screen {
 	private Background background;
 
 	private Sprite suspendedOverlaySprite;
-	private boolean gamePaused = false;
+	public boolean gamePaused = false;
 
 	private Array<Player> players;
 
