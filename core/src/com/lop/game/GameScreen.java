@@ -131,7 +131,7 @@ public class GameScreen extends Stage implements Screen {
         for(Body body : bodies){
 			if (!(body.getUserData() instanceof Player)) {
 				Vector2 pos = body.getWorldCenter();
-				if(pos.y < cam.position.y - cam.viewportWidth * 0.7f && body.getUserData() instanceof Platform){
+				if(pos.y < cam.position.y - cam.viewportHeight * 0.7f && body.getUserData() instanceof Platform){
 					world.destroyBody(body);
 					lastPlatform = nextPlatform(lastPlatform);
 				}
@@ -192,7 +192,7 @@ public class GameScreen extends Stage implements Screen {
 	public void checkDie(){
 		for(Player player : players){
 			Vector2 pos = player.getBody().getPosition();
-			if(pos.y < cam.position.y - cam.viewportWidth * 0.7f && !player.isDead())
+			if(pos.y < cam.position.y - cam.viewportHeight * 0.7f && !player.isDead())
 			{
 				die(player);
 				players.removeValue(player, true);

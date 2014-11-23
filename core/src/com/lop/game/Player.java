@@ -1,8 +1,5 @@
 package com.lop.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -51,9 +48,6 @@ public class Player implements Renderable{
 		
 		setDead(false);
 	}
-	public Sprite getSprite(){
-		return sprite;
-	}
 	public Body getBody(){
 		return body;
 	}
@@ -72,7 +66,6 @@ public class Player implements Renderable{
 			body.setLinearVelocity(0, 0);
 		for(Fixture fix : body.getFixtureList()){
 			Shape shape = fix.getShape();
-			System.out.println(body.getAngle());
 			sprite.setRotation(body.getAngle() * MathUtils.radDeg);
 			float width = shape.getRadius() * 2;
 			float height = shape.getRadius() * 2;
