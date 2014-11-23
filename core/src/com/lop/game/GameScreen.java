@@ -68,7 +68,7 @@ public class GameScreen extends Stage implements Screen {
 
 		Body body = world.createBody(bodyDef);
 		EdgeShape edge = new EdgeShape();
-		edge.set(-50, 0, 100, 0);
+		edge.set(-30f * 1.35f / 2f, 0, 30 * 1.35f / 2f, 0);
 
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = edge;
@@ -155,7 +155,7 @@ public class GameScreen extends Stage implements Screen {
 		else if (!gamePaused) {
 			world.step(delta, 6, 2);
 			verticalScrolling();
-			checkDie();
+//			checkDie();
 		}
 		else {
 			displayPauseOverlay();
@@ -272,10 +272,9 @@ public class GameScreen extends Stage implements Screen {
 	}
 	public Vector2 randomNewPos(Vector2 position)
 	{
-		float angle = MathUtils.random(-70f, -40f) * (float)(((MathUtils.random(0, 1)+ 1) -1)) + 90f;
-		
+		float angle = MathUtils.random(30f, 70f) * (float)(((MathUtils.random(0, 1) * 2) -1)) + 90f;
+		System.out.println(angle);
 		Vector2 translation = new Vector2(Vector2.X).rotate(angle).scl((float) (MathUtils.random(4f, 6f) * (1f + (Math.sin((90f - angle) * MathUtils.degRad) + 1f) / 5f)));
-
 		return position.add(translation).sub(new Vector2(3, 1));
 	}
 	public void initialGeneration(){

@@ -18,7 +18,6 @@ import com.badlogic.gdx.physics.box2d.Shape;
 public class GameControllerListener extends ControllerAdapter implements ContactListener{
 	private List<Player> players;
 
-	public final float SPEED = 10.0f;
 	public GameControllerListener() {
 		players = new ArrayList<Player>();
 	}
@@ -31,9 +30,7 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 				Player player = players.get(controllerIndex);
 				if(!player.isDead()){
 					Body body = player.getBody();
-					body.applyLinearImpulse(value * SPEED * 5, 0, body.getWorldCenter().x, body.getWorldCenter().y, true);
-					if(Math.abs(body.getLinearVelocity().x) > SPEED)
-						body.setLinearVelocity(Math.signum(body.getLinearVelocity().x) * SPEED, body.getLinearVelocity().y);
+					player.move(value);
 					return true;
 				}
 			}
@@ -48,12 +45,16 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 		{
 			Player player = players.get(controllerIndex);
 			if(!player.isDead()){
-				Body body = player.getBody();
-
-				if(player.getJumpCollisions() > 0){
-					body.setLinearDamping(1f);
-					body.applyLinearImpulse(controller.getAxis(1) * SPEED * 20, 520f, body.getWorldCenter().x, body.getWorldCenter().y, true);
-				}
+				player.jump(controller.getAxis(1));
+				
+			}
+			return true;
+		}
+		if(controllerIndex < players.size() && buttonIndex == 1)
+		{
+			Player player = players.get(controllerIndex);
+			if(!player.isDead()){
+				player.dash(controller.getAxis(1), controller.getAxis(0));
 			}
 			return true;
 		}

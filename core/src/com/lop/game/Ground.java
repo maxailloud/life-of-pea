@@ -22,7 +22,7 @@ public class Ground {
 
     public void render(SpriteBatch spriteBatch) {
         for (int i = 0; i < groundSprites.size; i++) {
-            spriteBatch.draw(groundSprites.get(i), -21 + (2 * i), 0, 2f, 2f);
+            spriteBatch.draw(groundSprites.get(i), -21 + (2 * i), 0, 2.01f, 2f);
         }
         spriteBatch.draw(littleBushSprite, -21 + 3, 2, 2f, 2f);
         spriteBatch.draw(littleBushSprite, -21 + 6, 2, 2f, 2f);
