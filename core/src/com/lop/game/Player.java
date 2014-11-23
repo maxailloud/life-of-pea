@@ -1,5 +1,8 @@
 package com.lop.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -43,6 +46,9 @@ public class Player implements Renderable{
 			break;
 		}
 		AtlasRegion tex = game.spritesAtlas.findRegion(path);
+		tex.getTexture().setFilter(TextureFilter.MipMapLinearNearest,
+				TextureFilter.Linear);
+		Gdx.gl20.glGenerateMipmap(GL20.GL_TEXTURE_2D);
 		sprite = new Sprite(tex);
 		
 		setDead(false);
