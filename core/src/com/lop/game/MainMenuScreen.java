@@ -6,13 +6,14 @@ import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class MainMenuScreen extends Stage implements Screen{
@@ -26,6 +27,8 @@ public class MainMenuScreen extends Stage implements Screen{
 	private Ground ground;
 	private Background background;
 	public OrthographicCamera camera;
+	public Array<Player> players;
+	public Generator generator = new Generator();
 
 	public MainMenuScreen(Viewport viewport, MyGame myGame) {
 		super(viewport);
@@ -64,6 +67,23 @@ public class MainMenuScreen extends Stage implements Screen{
 
 		world = new World(new Vector2(0, -90), true);
 
+		//Création du sol
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.type = BodyDef.BodyType.KinematicBody;
+		bodyDef.position.set(0, 2);
+
+		Body body = world.createBody(bodyDef);
+		EdgeShape edge = new EdgeShape();
+		edge.set(-30f * 1.35f / 2f, 0, 30 * 1.35f / 2f, 0);
+
+		FixtureDef fixtureDef = new FixtureDef();
+		fixtureDef.shape = edge;
+		fixtureDef.friction = 12.4f;
+
+		body.createFixture(fixtureDef);
+
+		edge.dispose();
+
 		ground = new Ground(game.spritesAtlas);
 		background = new Background();
 		background.initClouds(game.spritesAtlas);
@@ -71,15 +91,28 @@ public class MainMenuScreen extends Stage implements Screen{
 		camera = new OrthographicCamera(30f * 1.35f, 30f);
 		camera.position.y = camera.viewportHeight / 2;
 		camera.update();
+
+		players = new Array<>();
+		for(int i = 0; i < Controllers.getControllers().size; i++){
+			generator.createPlayer(i, world, game, null, players);
+		}
 	}
 
 	@Override
 	public void render(float delta) {
 		game.batch.setProjectionMatrix(camera.combined);
+
 		this.act(delta);
-		ground.render(game.batch);
+
 		background.render(game.batch, game.pauseBatch, 0);
+		ground.render(game.batch);
+
+		for(Player player: players) {
+			player.render(game.batch);
+		}
+		game.batch.end();
 		this.draw();
+		game.batch.begin();
 
 		world.step(delta, 6, 2);
 	}

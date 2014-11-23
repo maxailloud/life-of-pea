@@ -14,7 +14,9 @@ public class Generator {
 
 		Body body = world.createBody(bodyDef);
 		Player player = new Player(rank, game, body);
-		controllerListener.addPlayer(player);
+		if (null != controllerListener) {
+			controllerListener.addPlayer(player);
+		}
 		players.add(player);
 		body.setUserData(player);
 

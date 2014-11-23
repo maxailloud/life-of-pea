@@ -11,7 +11,6 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Shape;
 
 public class Player implements Renderable{
-	private MyGame game;
 	private Sprite sprite;
 	public int rank;
 	
@@ -28,7 +27,6 @@ public class Player implements Renderable{
 	private float initialMass;
 	public Player(int rank, MyGame game, Body body){
 		this.body = body;
-		this.game = game;
 		this.rank = rank;
 		this.jumpCollisions = 1;
 		
@@ -79,8 +77,7 @@ public class Player implements Renderable{
 			sprite.setRotation(body.getAngle() * MathUtils.radDeg);
 			float width = shape.getRadius() * 2;
 			float height = shape.getRadius() * 2;
-			game.batch.draw(sprite, body.getPosition().x - shape.getRadius(), body.getPosition().y - shape.getRadius(), width / 2f, height / 2f, width, height, 1f, 1f, sprite.getRotation());
-					
+			batch.draw(sprite, body.getPosition().x - shape.getRadius(), body.getPosition().y - shape.getRadius(), width / 2f, height / 2f, width, height, 1f, 1f, sprite.getRotation());
 		}
 	}
 	public boolean isDead() {
