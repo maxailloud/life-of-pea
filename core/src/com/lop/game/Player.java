@@ -33,19 +33,19 @@ public class Player implements Renderable{
 		
 		String path = "alien";
 		switch(rank){
-		case 1: 
+		case 0: 
 			path += "Green_round";
 			break;
-		case 2: 
+		case 1: 
 			path += "Blue_round";
 			break;
-		case 3: 
+		case 2: 
 			path += "Pink_round";
 			break;
-		case 4: 
+		case 3: 
 			path += "Yellow_round";
 			break;
-		case 5: 
+		case 4: 
 			path += "Beige_round";
 			break;
 		default :
