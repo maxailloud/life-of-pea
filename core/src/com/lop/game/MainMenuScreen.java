@@ -39,6 +39,8 @@ public class MainMenuScreen extends Stage implements Screen{
 	private Sprite gameDevSprite;
 	public Generator generator = new Generator();
 
+	private Sprite bronzeStar, silverStar;
+
 	public MainMenuScreen(Viewport viewport, MyGame myGame) {
 		super(viewport);
 
@@ -73,6 +75,10 @@ public class MainMenuScreen extends Stage implements Screen{
 				TextureFilter.Linear);
 		
 		Gdx.gl20.glGenerateMipmap(GL20.GL_TEXTURE_2D);
+
+		 bronzeStar = new Sprite(game.spritesAtlas.findRegion("starSilver"));
+		silverStar = new Sprite(game.spritesAtlas.findRegion("starBronze"));
+
 		
 		titleSprite = new Sprite(titleTex);
 		gameDevSprite = new Sprite(gameDevTex);
@@ -138,8 +144,12 @@ public class MainMenuScreen extends Stage implements Screen{
 			width = 100;
 			height = width * gameDevSprite.getHeight() / gameDevSprite.getWidth() ;
 			game.pauseBatch.draw(gameDevSprite, 0, 10, width, height);
-		
-			
+		game.pauseBatch.draw(bronzeStar, Gdx.graphics.getWidth() - 160, 23, 30, 30);
+
+		game.pauseBatch.draw(silverStar, Gdx.graphics.getWidth() - 160, 3, 30, 30);
+		game.font12.draw(game.pauseBatch, "Mass * 2",Gdx.graphics.getWidth() - 120, 40);
+			game.font12.draw(game.pauseBatch, "Mass * 10",Gdx.graphics.getWidth() - 120, 20);
+
 		game.pauseBatch.end();
 		game.batch.begin();
 

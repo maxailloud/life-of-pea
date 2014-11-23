@@ -120,6 +120,11 @@ public class Player implements Renderable{
 	}
 	public void dash(float axisX, float axisY, Sound dashSound) {
 		dashSound.play(0.5f);
+		if(Math.abs(axisX) < 0.20f)
+			axisX = Math.signum(body.getLinearVelocity().x);
+		else
+			axisX = Math.signum(axisX);
+		axisY = axisY > 0.25f ? 1f : 0f;
 		Vector2 axis = new Vector2(axisX, -axisY);
 		Vector2 dash = new Vector2(50f *  getMassRatio(), 0).rotate(axis.angle()).scl(1f, 1f/3f);
 		if(canDash){
