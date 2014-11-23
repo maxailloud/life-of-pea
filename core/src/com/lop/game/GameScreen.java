@@ -137,12 +137,14 @@ public class GameScreen extends Stage implements Screen {
 			if(body.getPosition().y + player.getRadius() * 2 < game.gameScreen.cam.position.y - game.gameScreen.cam.viewportHeight * 0.5f){
 				game.batch.end();
 				game.pauseBatch.begin();
+					float cursor =  body.getPosition().x * Gdx.graphics.getWidth() / game.gameScreen.cam.viewportWidth + Gdx.graphics.getWidth() / 2 ;
+					cursor = MathUtils.clamp(cursor, 0, Gdx.graphics.getWidth());
 					game.pauseBatch.draw(indicator, 
-							body.getPosition().x * Gdx.graphics.getWidth() / game.gameScreen.cam.viewportWidth + Gdx.graphics.getWidth() / 2 - indicator.getWidth() / 2, 
+							cursor - indicator.getWidth() / 2, 
 							0);
-					game.pauseBatch.draw(player.getSprite(), body.getPosition().x * Gdx.graphics.getWidth() / game.gameScreen.cam.viewportWidth + Gdx.graphics.getWidth() / 2 - 10, 15, 20, 20);
+					game.pauseBatch.draw(player.getSprite(), cursor - 10, 15, 20, 20);
 					if(player.isDead())
-						game.pauseBatch.draw(cross, body.getPosition().x * Gdx.graphics.getWidth() / game.gameScreen.cam.viewportWidth + Gdx.graphics.getWidth() / 2 - 10, 15, 20, 20);
+						game.pauseBatch.draw(cross, cursor - 10, 15, 20, 20);
 				game.pauseBatch.end();
 				game.batch.begin();
 			}
@@ -207,7 +209,7 @@ public class GameScreen extends Stage implements Screen {
 		if (1 == alivePlayers.size) {
 			game.victorySound.play();
 			playerWin = true;
-			winner = players.first();
+			winner = alivePlayers.get(0);
 			startOverlayAnim();
 		}
 	}

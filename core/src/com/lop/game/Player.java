@@ -1,18 +1,25 @@
 package com.lop.game;
 
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.primitives.MutableFloat;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Shape;
 
 public class Player implements Renderable{
+	private MyGame game;
 	private Sprite sprite;
+	private MutableFloat indicatorAlpha;
 	public int rank;
 	
 	private Body body;
@@ -27,8 +34,10 @@ public class Player implements Renderable{
 	
 	private float initialMass;
 	
+	private Tween die; 
 	public Player(int rank, MyGame game, Body body){
 		this.body = body;
+		this.game = game;
 		this.rank = rank;
 		this.jumpCollisions = 1;
 		
@@ -55,6 +64,7 @@ public class Player implements Renderable{
 		}
 		AtlasRegion tex = game.spritesAtlas.findRegion(path);
 		sprite = new Sprite(tex);
+		
 		
 		setDead(false);
 		
@@ -92,7 +102,6 @@ public class Player implements Renderable{
 	public boolean isDead() {
 		return dead;
 	}
-	
 	public void setDead(boolean dead) {
 		this.dead = dead;
 	}
@@ -105,10 +114,8 @@ public class Player implements Renderable{
 	public void jump(float axisValue, Sound jumpSound) {
 		if(getJumpCollisions() > 0){
 			jumpSound.play();
-			body.setLinearDamping(1f);
 			
-			Vector2 jump = (new Vector2( 50f *  getMassRatio(), 0).rotate(new Vector2(axisValue, 1f).angle()));
-			body.applyLinearImpulse(jump, body.getWorldCenter(), true);
+			body.applyLinearImpulse(axisValue * SPEED * 2f *  getMassRatio(), 50f *  getMassRatio(), body.getWorldCenter().x, body.getWorldCenter().y, true);
 		}
 	}
 	public void dash(float axisX, float axisY) {
@@ -129,8 +136,7 @@ public class Player implements Renderable{
 	private float getMassRatio(){
 		return body.getMass() / initialMass;
 	}
-
-	public Sprite getSprite() {
+	public Sprite getSprite(){
 		return sprite;
 	}
 }
