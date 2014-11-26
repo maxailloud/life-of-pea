@@ -3,6 +3,7 @@ package com.lop.game;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenEquations;
 import aurelienribon.tweenengine.primitives.MutableFloat;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controllers;
@@ -10,8 +11,13 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 public class GameScreen extends Stage implements Screen {
@@ -43,6 +49,8 @@ public class GameScreen extends Stage implements Screen {
 
 	Generator generator = new Generator();
 
+	
+	private KeyboardListener keyboard;
 	public GameScreen(MyGame game) {
 		this.game = game;
 
@@ -54,18 +62,29 @@ public class GameScreen extends Stage implements Screen {
 
 		PauseListener pauseListener = new PauseListener(this);
 		Controllers.addListener(pauseListener);
-
+		
+		if(game.enableKeyBoard){
+			keyboard = new KeyboardListener(game);
+			Gdx.input.setInputProcessor(keyboard);
+		}
 		ground = new Ground(game.spritesAtlas);
 		background = new Background();
 		
 		overlayY = new MutableFloat(300f);
+		players = new Array<>();
+		
+		
 	}
 
 	public void init() {
 		overlayY.setValue(300f);
+		
+		Controllers.removeListener(controllerListener);
 		controllerListener = new GameControllerListener(game);
 		Controllers.addListener(controllerListener);
 
+		if(world != null)
+			world.dispose();
 		world = new World(new Vector2(0, -90), true);
 		world.setContactListener(controllerListener);
 
@@ -86,7 +105,7 @@ public class GameScreen extends Stage implements Screen {
 
 		edge.dispose();
 
-		players = new Array<>();
+		players.clear();
 		playerWin = false;
 		winner = null;
 		gamePaused = false;
@@ -94,7 +113,13 @@ public class GameScreen extends Stage implements Screen {
 		cam.position.y = cam.viewportHeight / 2;
 		cam.update();
 
-		for(int i = 0; i < Controllers.getControllers().size; i++){
+		int offset = 0;
+		if(game.enableKeyBoard){
+			generator.createPlayer(Controllers.getControllers().size, 0, world, game, controllerListener, players);
+			offset = 1;
+			controllerListener.setOffset(offset);
+		}
+		for(int i = offset; i < Controllers.getControllers().size + offset; i++){
 			generator.createPlayer(Controllers.getControllers().size, i, world, game, controllerListener, players);
 		}
 		initialGeneration();
@@ -106,6 +131,8 @@ public class GameScreen extends Stage implements Screen {
 
 	@Override
 	public void render(float delta) {
+		if(game.enableKeyBoard)
+			keyboard.updateMove();
         game.batch.setProjectionMatrix(cam.combined);
         Array<Body> bodies = new Array<>();
         world.getBodies(bodies);
@@ -186,7 +213,7 @@ public class GameScreen extends Stage implements Screen {
 
 	public Array<Player> getAlivePlayers() {
 		Array<Player> alivePlayers = new Array<>();
-
+		
 		for(Player player : players){
 			if (!player.isDead()) {
 				alivePlayers.add(player);
@@ -366,6 +393,10 @@ public class GameScreen extends Stage implements Screen {
 	public void dispose() {
 		// TODO Auto-generated method stub
 
+	}
+
+	public Array<Player> getPlayers() {
+		return players;
 	}
 
 }

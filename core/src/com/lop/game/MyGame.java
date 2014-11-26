@@ -16,6 +16,8 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class MyGame extends Game {
+	public final boolean enableKeyBoard = false;
+	
 	public TextureAtlas spritesAtlas;
 	public  TweenManager tweenManager;
 	

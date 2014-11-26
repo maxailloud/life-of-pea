@@ -1,8 +1,5 @@
 package com.lop.game;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerAdapter;
 import com.badlogic.gdx.controllers.Controllers;
@@ -14,22 +11,22 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.utils.Array;
 
 public class GameControllerListener extends ControllerAdapter implements ContactListener{
-	private List<Player> players;
 	public MyGame myGame;
+	private int offset;
 
 	public GameControllerListener(MyGame myGame) {
-		players = new ArrayList<>();
 		this.myGame = myGame;
 	}
 	@Override
 	public boolean axisMoved(Controller controller, int axisIndex, float value) {
 		int controllerIndex = Controllers.getControllers().indexOf(controller, true);
-		if(controllerIndex < players.size() && axisIndex == 1)
+		if(controllerIndex < getPlayers().size && axisIndex == 1)
 		{
 			if(Math.abs(value) >= 0.25f){
-				Player player = players.get(controllerIndex);
+				Player player = getPlayers().get(controllerIndex + offset);
 				if(!player.isDead()){
 					Body body = player.getBody();
 					player.move(value);
@@ -44,17 +41,17 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 	public boolean buttonDown(Controller controller, int buttonIndex) {
 		if (!myGame.gameScreen.playerWin) {
 			int controllerIndex = Controllers.getControllers().indexOf(controller, true);
-			if(controllerIndex < players.size() && buttonIndex == 0)
+			if(controllerIndex < getPlayers().size && buttonIndex == 0)
 			{
-				Player player = players.get(controllerIndex);
+				Player player = getPlayers().get(controllerIndex + offset);
 				if(!player.isDead()){
 					player.jump(controller.getAxis(1), myGame.jumpSound);
 				}
 				return true;
 			}
-			if(controllerIndex < players.size() && buttonIndex == 1)
+			if(controllerIndex < getPlayers().size && buttonIndex == 1)
 			{
-				Player player = players.get(controllerIndex);
+				Player player = getPlayers().get(controllerIndex  + offset);
 				if(!player.isDead()){
 					player.dash(controller.getAxis(1), controller.getAxis(0), myGame.dashSound);
 				}
@@ -63,9 +60,10 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 		}
 		return super.buttonUp(controller, buttonIndex);
 	}
-	public void addPlayer(Player player){
-		players.add(player);
+	public Array<Player> getPlayers() {
+		return myGame.gameScreen.getPlayers();
 	}
+	
 	@Override
 	public void beginContact(Contact contact) {
 		Body a = contact.getFixtureA().getBody();
@@ -167,5 +165,8 @@ public class GameControllerListener extends ControllerAdapter implements Contact
 	@Override
 	public void postSolve(Contact contact, ContactImpulse impulse) {
 
+	}
+	public void setOffset(int offset) {
+		this.offset = offset;
 	}
 }
