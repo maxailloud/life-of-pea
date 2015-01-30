@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class MainMenuScreen extends Stage implements Screen{
+	private static final float APP_WIDTH = 864, APP_HEIGHT = 640;
 	private MyGame game;
 	public TextButton button;
     public TextButtonStyle textButtonStyle;
@@ -58,9 +59,10 @@ public class MainMenuScreen extends Stage implements Screen{
         textButtonStyle.up = skin.getDrawable("green_button00");
         textButtonStyle.down = skin.getDrawable("green_button01");
         button = new TextButton("Play", textButtonStyle);
-		button.setCenterPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2 - 78);
+		button.setCenterPosition(APP_WIDTH / 2, APP_HEIGHT / 2 - 78);
 
 		button.addListener(new ClickListener() {
+			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				game.clickSound.play();
 				start();
@@ -116,8 +118,8 @@ public class MainMenuScreen extends Stage implements Screen{
 		camera.update();
 
 		players = new Array<>();
-		for(int i = 0; i < Controllers.getControllers().size; i++){
-			generator.createPlayer(Controllers.getControllers().size, i, world, game, null, players);
+		for(int i = 0; i < Controllers.getControllers().size + (myGame.enableKeyBoard ? 1 : 0); i++){
+			generator.createPlayer(Controllers.getControllers().size  + (myGame.enableKeyBoard ? 1 : 0), i, world, game, null, players);
 		}
 	}
 
@@ -139,16 +141,16 @@ public class MainMenuScreen extends Stage implements Screen{
 			float width = 300;
 			float height = width * titleSprite.getHeight() / titleSprite.getWidth() ;
 			
-			game.pauseBatch.draw(titleSprite, Gdx.graphics.getWidth() / 2 - width / 2, Gdx.graphics.getHeight() * 0.75f - height / 2, width, height);
+			game.pauseBatch.draw(titleSprite, APP_WIDTH / 2 - width / 2, APP_HEIGHT * 0.75f - height / 2, width, height);
 		
 			width = 100;
 			height = width * gameDevSprite.getHeight() / gameDevSprite.getWidth() ;
 			game.pauseBatch.draw(gameDevSprite, 0, 10, width, height);
-		game.pauseBatch.draw(bronzeStar, Gdx.graphics.getWidth() - 160, 3, 30, 30);
-		game.pauseBatch.draw(silverStar, Gdx.graphics.getWidth() - 160, 23, 30, 30);
+		game.pauseBatch.draw(bronzeStar, APP_WIDTH - 160, 3, 30, 30);
+		game.pauseBatch.draw(silverStar, APP_WIDTH - 160, 23, 30, 30);
 		
-		game.font12.draw(game.pauseBatch, "Mass * 2",Gdx.graphics.getWidth() - 120, 40);
-			game.font12.draw(game.pauseBatch, "Mass * 10",Gdx.graphics.getWidth() - 120, 20);
+		game.font12.draw(game.pauseBatch, "Mass * 2",APP_WIDTH - 120, 40);
+			game.font12.draw(game.pauseBatch, "Mass * 10",APP_WIDTH - 120, 20);
 
 		game.pauseBatch.end();
 		game.batch.begin();

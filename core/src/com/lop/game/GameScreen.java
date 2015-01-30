@@ -21,6 +21,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 public class GameScreen extends Stage implements Screen {
+	private static final float APP_WIDTH = 864, APP_HEIGHT = 640;
+	
 	public MyGame game;
 
 	private World world;
@@ -164,8 +166,8 @@ public class GameScreen extends Stage implements Screen {
 			if(body.getPosition().y + player.getRadius() * 2 < game.gameScreen.cam.position.y - game.gameScreen.cam.viewportHeight * 0.5f){
 				game.batch.end();
 				game.pauseBatch.begin();
-					float cursor =  body.getPosition().x * Gdx.graphics.getWidth() / game.gameScreen.cam.viewportWidth + Gdx.graphics.getWidth() / 2 ;
-					cursor = MathUtils.clamp(cursor, 0, Gdx.graphics.getWidth());
+					float cursor =  body.getPosition().x * APP_WIDTH / game.gameScreen.cam.viewportWidth + APP_WIDTH / 2 ;
+					cursor = MathUtils.clamp(cursor, 0, APP_WIDTH);
 					game.pauseBatch.draw(indicator, 
 							cursor - indicator.getWidth() / 2, 
 							0);
@@ -284,7 +286,7 @@ public class GameScreen extends Stage implements Screen {
 	}
 	public Vector2 randomNewPos(Vector2 position)
 	{
-		float angle = MathUtils.random(30f, 70f) * (float)(((MathUtils.random(0, 1) * 2) -1)) + 90f;
+		float angle = MathUtils.random(30f, 70f) * (((MathUtils.random(0, 1) * 2) -1)) + 90f;
 		Vector2 translation = new Vector2(Vector2.X).rotate(angle).scl((float) (MathUtils.random(4f, 6f) * (1f + (Math.sin((90f - angle) * MathUtils.degRad) + 1f) / 5f)));
 		return position.add(translation).sub(new Vector2(3, 1));
 	}
@@ -341,17 +343,17 @@ public class GameScreen extends Stage implements Screen {
 		game.batch.end();
 		game.pauseBatch.begin();
 		displaySuspendedOverlay("Player " + (winner.rank + 1) + " win !!!", -60);
-		game.pauseBatch.draw(winner.getSprite(), (Gdx.graphics.getWidth() / 2) - winner.getSprite().getWidth() / 2, (Gdx.graphics.getHeight() / 2) - winner.getSprite().getHeight() / 2 + 10 + overlayY.floatValue());
+		game.pauseBatch.draw(winner.getSprite(), (APP_WIDTH / 2) - winner.getSprite().getWidth() / 2, (APP_HEIGHT / 2) - winner.getSprite().getHeight() / 2 + 10 + overlayY.floatValue());
 		game.pauseBatch.end();
 		game.batch.begin();
 	}
 
 	public void displaySuspendedOverlay(String message, float offset) {
 		
-		suspendedOverlaySprite.setPosition((Gdx.graphics.getWidth() / 2) - (suspendedOverlaySprite.getWidth() / 2), (Gdx.graphics.getHeight() / 2) - (suspendedOverlaySprite.getHeight() / 2) + overlayY.floatValue());
+		suspendedOverlaySprite.setPosition((APP_WIDTH / 2) - (suspendedOverlaySprite.getWidth() / 2), (APP_HEIGHT / 2) - (suspendedOverlaySprite.getHeight() / 2) + overlayY.floatValue());
 		suspendedOverlaySprite.setScale(2f);
 		suspendedOverlaySprite.draw(game.pauseBatch);
-		game.font12.draw(game.pauseBatch, message, Gdx.graphics.getWidth() / 2 - game.font12.getBounds(message).width / 2f, Gdx.graphics.getHeight() / 2 + game.font12.getBounds(message).height/2 + offset + overlayY.floatValue());
+		game.font12.draw(game.pauseBatch, message, APP_WIDTH / 2 - game.font12.getBounds(message).width / 2f, APP_HEIGHT / 2 + game.font12.getBounds(message).height/2 + offset + overlayY.floatValue());
 		
 	}
 

@@ -62,7 +62,7 @@ public class KeyboardListener implements InputProcessor {
 				Player player = getPlayers().get(0);
 				if(!player.isDead()){
 					float value = -1f;
-					player.dash(value, 1f, myGame.dashSound);
+					player.dash(value, 0f, myGame.dashSound);
 				}
 				return true;
 			}
@@ -71,7 +71,7 @@ public class KeyboardListener implements InputProcessor {
 				Player player = getPlayers().get(0);
 				if(!player.isDead()){
 					float value = 1f;
-					player.dash(value, 1f, myGame.dashSound);
+					player.dash(value, 0f, myGame.dashSound);
 				}
 				return true;
 			}
